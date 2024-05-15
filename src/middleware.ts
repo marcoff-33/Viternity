@@ -6,4 +6,4 @@ export const config = {
   matcher: ["/((?!.+.[w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };
 
-const isProtectedRoute = createRouteMatcher(["/userpage"]);
+const isProtectedRoute = createRouteMatcher(["/dashboard"]);
