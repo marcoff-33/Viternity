@@ -10,7 +10,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 
-export const server_createUser = async () => {
+export const server_handleUser = async () => {
   const { userId } = auth();
   const db = getFirestore(firebase_app);
   const docRef = doc(db, "users", userId!);

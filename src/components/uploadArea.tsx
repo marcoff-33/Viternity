@@ -7,16 +7,21 @@ import {
   getStorage,
 } from "firebase/storage";
 import firebase_app from "@/firebase/config";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 
 import { getFirestore, doc, setDoc } from "firebase/firestore";
-import { server_createUser } from "./server_getUser";
+
 import { auth } from "@clerk/nextjs/server";
+import { server_handleUser } from "./server_getUser";
 
 export default function uploadArea() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [progresspercent, setProgresspercent] = useState(0);
   const [imgUrl, setImgUrl] = useState("");
+
+  useEffect(() => {
+    server_handleUser();
+  }, []);
 
   const storage = getStorage(firebase_app);
   const db = getFirestore(firebase_app);
@@ -50,7 +55,7 @@ export default function uploadArea() {
 
   return (
     <div>
-      <button className="bg-red-500" onClick={() => server_createUser()}>
+      <button className="bg-red-500" onClick={() => server_handleUser()}>
         create user
       </button>
       <form onSubmit={handleSubmit}>
