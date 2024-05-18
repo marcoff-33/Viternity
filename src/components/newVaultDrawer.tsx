@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SetStateAction, useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -19,8 +19,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "./ui/button";
+import { server_createVault } from "./server_getUser";
 
 export default function NewVaultDrawer() {
+  const [vaultName, setVaultName] = useState("");
+  const [vaultStyle, setVaultStyle] = useState("default");
+
+  const newVault = { vaultName, vaultStyle };
+
+  const handleInputChange = ({
+    setState,
+    event,
+  }: {
+    setState: React.Dispatch<SetStateAction<string>>;
+    event: React.ChangeEvent<HTMLInputElement>;
+  }) => {
+    setState(event.target.value);
+  };
+
   return (
     <Drawer>
       <DrawerTrigger className="z-50 text-lg bg-red-500 p-10 rounded-xl">
@@ -32,7 +48,12 @@ export default function NewVaultDrawer() {
           <DrawerDescription></DrawerDescription>
         </DrawerHeader>
         <div className="px-5">
-          <Input placeholder="Vault Name" />
+          <Input
+            placeholder="Vault Name"
+            onChange={(event) =>
+              handleInputChange({ setState: setVaultName, event })
+            }
+          />
         </div>
         <div className="px-5 py-5">
           <Select disabled>
@@ -47,7 +68,9 @@ export default function NewVaultDrawer() {
           </Select>
         </div>
         <DrawerFooter>
-          <Button className="">Submit</Button>
+          <Button className="" onClick={() => server_createVault(newVault)}>
+            Submit
+          </Button>
           <DrawerClose className="py-2">
             <Button variant={"outline"} className="w-full">
               Cancel

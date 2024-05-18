@@ -1,20 +1,24 @@
+import UserVaults from "@/components/UserVaults";
 import CreateVault from "@/components/createVault";
-import PicturesArea from "@/components/picturesArea";
-import { server_handleUser } from "@/components/server_getUser";
-import UploadArea from "@/components/uploadArea";
-import { SignUpButton, UserButton } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
+import {
+  server_getUserVaults,
+  server_handleUser,
+} from "@/components/server_getUser";
 
-import { getDownloadURL, getStorage, listAll, ref } from "firebase/storage";
+import { auth } from "@clerk/nextjs/server";
 import React, { useEffect, useState } from "react";
 
-export default function page() {
+export default async function page() {
   const { userId } = auth();
   const handleCreateVault = console.log("proot");
+
+  const userVaults = await server_getUserVaults();
+  console.log(userVaults);
 
   return (
     <div className="min-h-screen bg-accent-foreground flex justify-center items-center flex-col gap-5">
       <div className="text-primary-foreground text-5xl">Your Vaults.</div>
+      <UserVaults vaults={userVaults} />
       <CreateVault handleCreateVault={handleCreateVault} />
     </div>
   );
