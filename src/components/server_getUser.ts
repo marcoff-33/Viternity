@@ -9,9 +9,13 @@ import {
   collection,
   addDoc,
   getDocs,
+  query,
+  where,
+  updateDoc,
 } from "firebase/firestore";
 import { Vault } from "./UserVaults";
 import { freemem } from "os";
+import firebase from "firebase/compat/app";
 
 export const server_handleUser = async () => {
   const { userId } = auth();
@@ -38,33 +42,72 @@ export const server_handleUser = async () => {
 export const server_getUserVaults = async () => {
   const { userId } = auth();
   const db = getFirestore(firebase_app);
-  const vaultsCollection = collection(db, "users", userId!, "vaults");
+  const vaultsCollection = collection(db, "vaults");
+  const queryVaults = query(vaultsCollection, where("authorId", "==", userId));
 
-  const vaultsSnapshot = await getDocs(vaultsCollection);
+  const vaultsSnapshot = await getDocs(queryVaults);
   const vaults = vaultsSnapshot.docs.map((doc) => doc.data());
 
   return vaults as Vault[];
 };
 
 export const server_createVault = async ({
-  vaultName,
   vaultStyle,
+  vaultName,
 }: {
-  vaultName: string;
   vaultStyle: string;
+  vaultName: string;
 }) => {
   const { userId } = auth();
-  try {
-    const db = getFirestore(firebase_app);
-    const userVaults = collection(db, "users", userId!, "vaults");
+  const db = getFirestore(firebase_app);
 
-    const newVault = doc(userVaults, vaultName);
+  const userRef = doc(db, "users", userId!);
+  const userSnap = await getDoc(userRef);
+  const userData = userSnap.data();
+  const ownedVaults = userData?.ownedVaults;
+  const userPlan = userData?.plan;
+
+  if (
+    (userPlan === "free" && ownedVaults >= 1) ||
+    (userPlan === "paid" && ownedVaults >= 3)
+  ) {
+    throw new Error(
+      "You have already created the maximum number of Vaults for your Plan."
+    );
+  }
+
+  try {
+    const vaultsRef = collection(db, "vaults");
+
+    const newVaultRef = doc(vaultsRef);
     await setDoc(
-      newVault,
-      { name: vaultName, plan: "free", style: vaultStyle },
+      newVaultRef,
+      {
+        name: vaultName,
+        plan: "free",
+        style: vaultStyle,
+        authorId: userId,
+      },
       { merge: true }
     );
+
+    await updateDoc(userRef, { ownedVaults: ownedVaults + 1 });
+
+    const vaultId = newVaultRef.id;
+    console.log("Vault created with ID:", vaultId);
+
+    return vaultId;
   } catch (error) {
-    console.log("Error Creating Vault");
+    console.error("Error creating vault:", error);
+    throw error;
   }
+};
+
+export const server_getVaultData = async (vaultId: string) => {
+  const db = getFirestore(firebase_app);
+  const vaultRef = doc(db, "users", "vaults", vaultId);
+
+  const vaultSnap = await getDoc(vaultRef);
+
+  console.log(vaultSnap.data());
 };

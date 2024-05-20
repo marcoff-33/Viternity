@@ -1,14 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import NewVaultDrawer from "./newVaultDrawer";
 import { server_handleUser } from "./server_getUser";
+import NewVaultDrawer from "./newVaultDrawer";
 
-export default function CreateVault({
-  handleCreateVault,
-}: {
-  handleCreateVault: void;
-}) {
+export default function CreateVault({}: {}) {
   return (
     <div className="">
       <NewVaultDrawer />

@@ -1,4 +1,16 @@
-import React, { SetStateAction, useState } from "react";
+import * as React from "react";
+
+import { cn } from "@/lib/utils";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -10,74 +22,135 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
-import { Label } from "./ui/label";
+import { Label } from "@/components/ui/label";
+import { SetStateAction, useState } from "react";
+import { useMediaQuery } from "@/app/hooks/use-media-query";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "./ui/button";
+} from "./ui/select";
 import { server_createVault } from "./server_getUser";
+import { useRouter } from "next/navigation";
 
-export default function NewVaultDrawer() {
-  const [vaultName, setVaultName] = useState("");
-  const [vaultStyle, setVaultStyle] = useState("default");
+export default function newVaultDrawer() {
+  const [open, setOpen] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const newVault = { vaultName, vaultStyle };
-
-  const handleInputChange = ({
-    setState,
-    event,
-  }: {
-    setState: React.Dispatch<SetStateAction<string>>;
-    event: React.ChangeEvent<HTMLInputElement>;
-  }) => {
-    setState(event.target.value);
-  };
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline">+</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Set up a new Vault</DialogTitle>
+            <DialogDescription>
+              You can edit any of these settings later.
+            </DialogDescription>
+          </DialogHeader>
+          <ProfileForm open={open} setOpen={setOpen} />
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
-    <Drawer>
-      <DrawerTrigger className="z-50 text-lg bg-red-500 p-10 rounded-xl">
-        +
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>
+        <Button variant="outline">+</Button>
       </DrawerTrigger>
-      <DrawerContent className="pt-2 pb-10">
-        <DrawerHeader>
-          <DrawerTitle className="text-center">Create New Vault</DrawerTitle>
-          <DrawerDescription></DrawerDescription>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Set up a new Vault</DrawerTitle>
+          <DrawerDescription>
+            You can edit any of these settings later.
+          </DrawerDescription>
         </DrawerHeader>
-        <div className="px-5">
-          <Input
-            placeholder="Vault Name"
-            onChange={(event) =>
-              handleInputChange({ setState: setVaultName, event })
-            }
-          />
-        </div>
-        <div className="px-5 py-5">
-          <Select disabled>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Default Style" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <DrawerFooter>
-          <Button className="" onClick={() => server_createVault(newVault)}>
-            Submit
-          </Button>
-          <DrawerClose className="py-2">
-            <Button variant={"outline"} className="w-full">
-              Cancel
-            </Button>
+        <ProfileForm className="px-4" open={open} setOpen={setOpen} />
+        <DrawerFooter className="pt-2">
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
+  );
+}
+
+function ProfileForm({
+  className,
+  open,
+  setOpen,
+}: React.ComponentProps<"form"> & {
+  open: boolean;
+  setOpen: React.Dispatch<SetStateAction<boolean>>;
+}) {
+  const [vaultName, setVaultName] = useState("Unnamed Vault");
+  const [vaultStyle, setVaultStyle] = useState("default");
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const newVault = { vaultName, vaultStyle };
+  const handleInputChange = (
+    setState: React.Dispatch<SetStateAction<string>>,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setState(event.target.value);
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      await server_createVault(newVault);
+      setOpen(false);
+      router.refresh();
+    } catch (err) {
+      const error = err as Error;
+      setError(error.message);
+    }
+  };
+
+  return (
+    <form
+      className={cn("grid items-start gap-4", className)}
+      onSubmit={handleSubmit}
+    >
+      <div className="grid gap-2">
+        <Label htmlFor="vaultName">Vault Name</Label>
+        <Input
+          id="vaultName"
+          placeholder="Only visible in your Dashboard"
+          onChange={(event) => handleInputChange(setVaultName, event)}
+        />
+      </div>
+      <div className="grid gap-2">
+        <Select disabled>
+          <Label>Vault Theme</Label>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select a Theme" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Fruits</SelectLabel>
+              <SelectItem value="apple">placeholder</SelectItem>
+              <SelectItem value="banana">placeholder</SelectItem>
+              <SelectItem value="blueberry">placeholder</SelectItem>
+              <SelectItem value="grapes">placeholder</SelectItem>
+              <SelectItem value="pineapple">placeholder</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      {error && <div className="text-red-500 text-sm font-bold">{error}</div>}
+      <Button type="submit" disabled={error !== null}>
+        Create Vault
+      </Button>
+    </form>
   );
 }
