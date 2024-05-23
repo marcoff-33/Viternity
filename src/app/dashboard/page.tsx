@@ -1,12 +1,7 @@
 import UserVaults from "@/components/UserVaults";
 import CreateVault from "@/components/createVault";
-import {
-  server_getUserVaults,
-  server_handleUser,
-} from "@/components/server_getUser";
-
-import { auth } from "@clerk/nextjs/server";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { server_getUserVaults } from "../utils/serverActions";
 
 export default async function page() {
   const userVaults = await server_getUserVaults();

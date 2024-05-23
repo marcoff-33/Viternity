@@ -1,15 +1,11 @@
-"use client";
+import { ImagesCarousel } from "@/components/ImagesCarousel";
 
-import {
-  server_getUserVaults,
-  server_getVaultData,
-} from "@/components/server_getUser";
 import React from "react";
 
-export default function page() {
+export default async function page() {
   return (
-    <div>
-      <button onClick={() => server_getVaultData("plswork")}>GetData</button>
+    <div className="bg-red-50 h-screen flex justify-center py-20">
+      <ImagesCarousel />
     </div>
   );
 }

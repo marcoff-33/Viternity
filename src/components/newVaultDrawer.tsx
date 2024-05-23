@@ -34,7 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { server_createVault } from "./server_getUser";
+import { server_createVault } from "../app/utils/serverActions";
 import { useRouter } from "next/navigation";
 
 export default function newVaultDrawer() {

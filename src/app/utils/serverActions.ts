@@ -12,10 +12,16 @@ import {
   query,
   where,
   updateDoc,
+  FieldValue,
+  arrayUnion,
 } from "firebase/firestore";
-import { Vault } from "./UserVaults";
-import { freemem } from "os";
-import firebase from "firebase/compat/app";
+import { Vault } from "../../components/UserVaults";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 export const server_handleUser = async () => {
   const { userId } = auth();
@@ -46,8 +52,13 @@ export const server_getUserVaults = async () => {
   const queryVaults = query(vaultsCollection, where("authorId", "==", userId));
 
   const vaultsSnapshot = await getDocs(queryVaults);
-  const vaults = vaultsSnapshot.docs.map((doc) => doc.data());
+  const vaults = vaultsSnapshot.docs.map((doc) => {
+    const data = doc.data();
+    const id = doc.id;
+    return { ...data, id };
+  });
 
+  console.log(vaults);
   return vaults as Vault[];
 };
 
@@ -105,9 +116,55 @@ export const server_createVault = async ({
 
 export const server_getVaultData = async (vaultId: string) => {
   const db = getFirestore(firebase_app);
-  const vaultRef = doc(db, "users", "vaults", vaultId);
+  const vaultRef = doc(db, "vaults", vaultId);
 
   const vaultSnap = await getDoc(vaultRef);
 
-  console.log(vaultSnap.data());
+  return vaultSnap.data() as Vault;
+};
+
+export const server_uploadFile = async (
+  formData: FormData,
+  vaultId: string
+) => {
+  const { userId } = auth();
+  const storage = getStorage(firebase_app);
+
+  try {
+    const file = formData.get("file") as File;
+
+    // unique file name to avoid overwrites in db, temporary until better solution
+    const timestamp = Date.now();
+    const filename = `${file.name}-${timestamp}`;
+
+    const storageRef = ref(storage, `users/${userId}/files/${filename}`);
+    await uploadBytesResumable(storageRef, file);
+    console.log("uploaded file");
+    const downloadURL = await getDownloadURL(storageRef);
+    console.log(downloadURL);
+    await server_addLinkToVault(vaultId, downloadURL);
+    console.log("image linked to user's db");
+    return filename; // Return the unique filename
+  } catch (e) {
+    return "Image Upload failed";
+  }
+};
+
+const server_addLinkToVault = async (vaultId: string, downloadURL: string) => {
+  const db = getFirestore(firebase_app);
+  const vaultRef = doc(db, "vaults", vaultId);
+  await updateDoc(vaultRef, {
+    imageUrls: arrayUnion(downloadURL),
+  });
+};
+
+export const server_checkIfVaultExists = async (vaultId: string) => {
+  const db = getFirestore(firebase_app);
+  const vaultRef = doc(db, "vaults", vaultId);
+  try {
+    const vaultSnapshot = await getDoc(vaultRef);
+    return vaultSnapshot.exists();
+  } catch (error) {
+    return false;
+  }
 };
