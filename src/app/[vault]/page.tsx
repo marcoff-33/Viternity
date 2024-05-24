@@ -4,8 +4,10 @@ import React from "react";
 
 export default async function page() {
   return (
-    <div className="bg-red-50 h-screen flex justify-center py-20">
-      <ImagesCarousel />
+    <div className="bg-red-50 flex justify-center h-screen">
+      <div className="items-center max-h-fit flex justify-center">
+        <ImagesCarousel />
+      </div>
     </div>
   );
 }

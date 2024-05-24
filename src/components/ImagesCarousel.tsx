@@ -5,6 +5,7 @@ import * as React from "react";
 import { CardContent } from "@/components/ui/card";
 import {
   Carousel,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
@@ -21,6 +22,20 @@ import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
 export function ImagesCarousel() {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
+  const [api, setApi] = React.useState<CarouselApi>();
+  const [current, setCurrent] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
   const pathname = usePathname();
   const vaultId = pathname.split("/")[1];
 
@@ -38,8 +53,8 @@ export function ImagesCarousel() {
 
   return (
     <Dialog>
-      <DialogTrigger>
-        <div className="w-[300px] rounded-lg ">
+      <DialogTrigger className="max-h-fit self-center">
+        <div className="w-[300px] rounded-lg">
           <AspectRatio
             ratio={5 / 4}
             className="border rounded-lg relative bg-primary/50"
@@ -75,26 +90,41 @@ export function ImagesCarousel() {
           </div>
         </div>
       </DialogTrigger>
-      <DialogContent className="min-w-[95vw] max-h-[95vh] max-w-4xl border-none  shadow-none bg-transparent backdrop-blur-md">
-        <Carousel className="">
+      <DialogContent className="min-w-[95vw] max-h-[95vh] max-w-4xl border-none flex justify-center flex-col shadow-none bg-transparent backdrop-blur-md">
+        <Carousel className=" max-w-[80vw] self-center" setApi={setApi}>
           <CarouselContent className="items-center">
             {vaultImages?.map((image, index) => (
               <CarouselItem key={index}>
-                <div className="">
-                  <CardContent className="bg-background/10 items-center flex justify-center rounded-lg">
+                <div className="flex justify-center items-center ">
+                  <CardContent className="min-h-[95vh] max-w-fit  items-center flex justify-center rounded-lg ">
                     <img
                       src={image}
                       alt=""
-                      className="object-contain max-h-[85vh] aspect-auto"
+                      className="object-contain max-h-[85vh] aspect-auto rounded-lg"
                     />
                   </CardContent>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious className="w-[50px] h-[40px] hidden sm:inline-flex" />
+          <CarouselNext className="w-[50px] h-[40px] hidden sm:inline-flex" />
         </Carousel>
+
+        <div className="flex flex-row justify-center  absolute bottom-0 left-0 right-0">
+          {vaultImages && vaultImages.length > 0 && (
+            <div className="flex flex-row justify-center items-center">
+              {vaultImages.map((dot, index) => (
+                <RxDotFilled
+                  className={`${
+                    index == current - 1 ? "text-xl" : "text-sm"
+                  } items-center self-center text-primary transition-all duration-200`}
+                  key={index}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
