@@ -146,6 +146,7 @@ export const server_uploadFile = async (
     console.log("image linked to user's db");
     return filename; // Return the unique filename
   } catch (e) {
+    console.log(`${e},`, userId);
     return "Image Upload failed";
   }
 };
@@ -158,6 +159,17 @@ const server_addLinkToVault = async (vaultId: string, downloadURL: string) => {
   });
 };
 
+const server_addTextLinkToVault = async (
+  vaultId: string,
+  downloadURL: string
+) => {
+  const db = getFirestore(firebase_app);
+  const vaultRef = doc(db, "vaults", vaultId);
+  await updateDoc(vaultRef, {
+    vaultText: downloadURL,
+  });
+};
+
 export const server_checkIfVaultExists = async (vaultId: string) => {
   const db = getFirestore(firebase_app);
   const vaultRef = doc(db, "vaults", vaultId);
@@ -166,5 +178,29 @@ export const server_checkIfVaultExists = async (vaultId: string) => {
     return vaultSnapshot.exists();
   } catch (error) {
     return false;
+  }
+};
+
+export const server_uploadHTML = async (html: string, vaultId: string) => {
+  const { userId } = auth();
+  const storage = getStorage(firebase_app);
+
+  try {
+    const filename = `html-${vaultId}`;
+
+    const storageRef = ref(storage, `users/${userId}/text/${filename}`);
+    await uploadBytesResumable(
+      storageRef,
+      new Blob([html], { type: "text/html" })
+    );
+    console.log("uploaded file");
+    const downloadURL = await getDownloadURL(storageRef);
+    console.log(downloadURL);
+    await server_addTextLinkToVault(vaultId, downloadURL);
+    console.log("html text linked to user's db");
+    return filename; // Return the unique filename
+  } catch (e) {
+    console.log(`${e},`, userId);
+    return "Image Upload failed";
   }
 };

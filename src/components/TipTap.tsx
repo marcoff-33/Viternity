@@ -1,23 +1,27 @@
 "use client";
 // PLACEHOLDER TEXT EDITOR
 import { Color } from "@tiptap/extension-color";
-
 import ListItem from "@tiptap/extension-list-item";
 import TextStyle, { TextStyleOptions } from "@tiptap/extension-text-style";
-import { EditorProvider, useCurrentEditor } from "@tiptap/react";
+import {
+  Editor,
+  EditorContent,
+  EditorProvider,
+  useCurrentEditor,
+  useEditor,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
+import { server_uploadHTML } from "@/app/utils/serverActions";
 
-const MenuBar = () => {
-  const { editor } = useCurrentEditor();
-
+const MenuBar = ({ editor }: { editor: Editor }) => {
   if (!editor) {
     return null;
   }
 
   return (
-    <div className="flex gap-5">
+    <div className="flex bg-muted flex-wrap p-2">
       <Button
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
@@ -29,14 +33,22 @@ const MenuBar = () => {
       <button
         onClick={() => editor.chain().focus().toggleItalic().run()}
         disabled={!editor.can().chain().focus().toggleItalic().run()}
-        className={editor.isActive("italic") ? "is-active" : ""}
+        className={`border-x border-transparent  transition-all rounded-none duration-100 ${
+          editor.isActive("italic")
+            ? "is-active bg-primary text-primary-foreground p-4"
+            : "shadow-sm px-2"
+        }`}
       >
         italic
       </button>
       <button
         onClick={() => editor.chain().focus().toggleStrike().run()}
         disabled={!editor.can().chain().focus().toggleStrike().run()}
-        className={editor.isActive("strike") ? "is-active" : ""}
+        className={`border-x border-transparent px-2 transition-colors duration-100 ${
+          editor.isActive("strike")
+            ? "is-active bg-white shadow-md rounded-md"
+            : "shadow-none bg-transparent" && ""
+        }`}
       >
         strike
       </button>
@@ -82,18 +94,6 @@ const MenuBar = () => {
         className={editor.isActive("heading", { level: 4 }) ? "is-active" : ""}
       >
         h4
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
-        className={editor.isActive("heading", { level: 5 }) ? "is-active" : ""}
-      >
-        h5
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
-        className={editor.isActive("heading", { level: 6 }) ? "is-active" : ""}
-      >
-        h6
       </button>
       <button
         onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -164,20 +164,29 @@ const extensions = [
     },
   }),
 ];
+const textEditor = () => {
+  const [content, setContent] = useState("e"); // Initial HTML
 
-const content = `
-<h1>
-  OwO
-</h1>
+  const editor = useEditor({
+    content: content,
+    extensions,
+    onUpdate: ({ editor }) => {
+      setContent(editor.getHTML());
+    },
+  });
 
-`;
-
-export default () => {
   return (
-    <EditorProvider
-      slotBefore={<MenuBar />}
-      extensions={extensions}
-      content={content}
-    ></EditorProvider>
+    <>
+      <MenuBar editor={editor!} />
+      <EditorContent editor={editor} />
+      <button onClick={() => console.log(content)}>log</button>
+      <button
+        onClick={() => server_uploadHTML(content, "OVFuiCeBSMke1MzlNG3O")}
+      >
+        upload
+      </button>
+    </>
   );
 };
+
+export default textEditor;
