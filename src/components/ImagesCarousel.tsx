@@ -20,8 +20,7 @@ import { IoIosPhotos } from "react-icons/io";
 import { Vault } from "./UserVaults";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
-export function ImagesCarousel() {
-  const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
+export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
 
@@ -36,20 +35,6 @@ export function ImagesCarousel() {
       setCurrent(api.selectedScrollSnap() + 1);
     });
   }, [api]);
-  const pathname = usePathname();
-  const vaultId = pathname.split("/")[1];
-
-  const handleFirstLoad = async () => {
-    const data = await server_getVaultData(vaultId);
-    setVaultData(data);
-  };
-
-  useEffect(() => {
-    handleFirstLoad();
-    console.log("loaded", vaultData, vaultId);
-  }, []);
-
-  const vaultImages = vaultData?.imageUrls;
 
   return (
     <Dialog>
@@ -59,7 +44,7 @@ export function ImagesCarousel() {
             ratio={5 / 4}
             className="border rounded-lg relative bg-primary/50"
           >
-            {vaultData && (
+            {vaultImages && (
               <>
                 <IoIosPhotos
                   className="absolute z-50 text-white top-2 right-2"

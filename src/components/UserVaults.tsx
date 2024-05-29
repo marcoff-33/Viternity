@@ -8,6 +8,7 @@ export type Vault = {
   authorId: string;
   style: string;
   imageUrls: string[];
+  vaultText: string;
 };
 
 export default function userVaults({ vaults }: { vaults: Vault[] }) {

@@ -22,6 +22,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import { url } from "inspector";
 
 export const server_handleUser = async () => {
   const { userId } = auth();
@@ -181,26 +182,33 @@ export const server_checkIfVaultExists = async (vaultId: string) => {
   }
 };
 
-export const server_uploadHTML = async (html: string, vaultId: string) => {
+export const server_uploadHTML = async (text: string, vaultId: string) => {
   const { userId } = auth();
   const storage = getStorage(firebase_app);
 
   try {
-    const filename = `html-${vaultId}`;
+    const filename = `text-${vaultId}`;
 
     const storageRef = ref(storage, `users/${userId}/text/${filename}`);
-    await uploadBytesResumable(
-      storageRef,
-      new Blob([html], { type: "text/html" })
-    );
+    await uploadBytesResumable(storageRef, new Blob([text], { type: "text" }));
     console.log("uploaded file");
     const downloadURL = await getDownloadURL(storageRef);
     console.log(downloadURL);
     await server_addTextLinkToVault(vaultId, downloadURL);
-    console.log("html text linked to user's db");
+    console.log("text linked to user's db");
     return filename; // Return the unique filename
   } catch (e) {
     console.log(`${e},`, userId);
     return "Image Upload failed";
+  }
+};
+
+export const server_getVaultTextContent = async (textFileUrl: string) => {
+  try {
+    const textPage = await fetch(textFileUrl);
+    const text = await textPage.text();
+    return text;
+  } catch (error) {
+    console.log(error);
   }
 };

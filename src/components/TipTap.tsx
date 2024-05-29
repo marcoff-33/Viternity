@@ -1,6 +1,18 @@
 "use client";
 // PLACEHOLDER TEXT EDITOR
 import { Color } from "@tiptap/extension-color";
+import {
+  MdFormatBold,
+  MdFormatItalic,
+  MdFormatListBulleted,
+  MdOutlineClearAll,
+  MdOutlineCode,
+  MdOutlineStrikethroughS,
+} from "react-icons/md";
+import { PiParagraphLight } from "react-icons/pi";
+import { LuHeading1, LuHeading2, LuHeading3, LuHeading4 } from "react-icons/lu";
+import { BiCodeBlock } from "react-icons/bi";
+
 import ListItem from "@tiptap/extension-list-item";
 import TextStyle, { TextStyleOptions } from "@tiptap/extension-text-style";
 import {
@@ -15,135 +27,131 @@ import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { server_uploadHTML } from "@/app/utils/serverActions";
 
+const buttonStyles =
+  "hover:bg-muted transition-all px-3 py-2 rounded-md duration-300 text-center items-center";
+
 const MenuBar = ({ editor }: { editor: Editor }) => {
   if (!editor) {
     return null;
   }
 
   return (
-    <div className="flex bg-muted flex-wrap p-2">
-      <Button
+    <div className="flex bg-background flex-wrap p-1 gap-1">
+      <button
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
-        className={editor.isActive("bold") ? "is-active" : ""}
-        variant={"outline"}
+        className={`${buttonStyles} ${
+          editor.isActive("bold")
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
       >
-        bold
-      </Button>
+        <MdFormatBold />
+      </button>
       <button
         onClick={() => editor.chain().focus().toggleItalic().run()}
         disabled={!editor.can().chain().focus().toggleItalic().run()}
-        className={`border-x border-transparent  transition-all rounded-none duration-100 ${
+        className={`${buttonStyles} ${
           editor.isActive("italic")
-            ? "is-active bg-primary text-primary-foreground p-4"
-            : "shadow-sm px-2"
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
         }`}
       >
-        italic
+        <MdFormatItalic />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleStrike().run()}
         disabled={!editor.can().chain().focus().toggleStrike().run()}
-        className={`border-x border-transparent px-2 transition-colors duration-100 ${
+        className={`${buttonStyles} ${
           editor.isActive("strike")
-            ? "is-active bg-white shadow-md rounded-md"
-            : "shadow-none bg-transparent" && ""
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
         }`}
       >
-        strike
+        <MdOutlineStrikethroughS />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleCode().run()}
         disabled={!editor.can().chain().focus().toggleCode().run()}
-        className={editor.isActive("code") ? "is-active" : ""}
+        className={`${buttonStyles} ${
+          editor.isActive("code")
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
       >
-        code
+        <MdOutlineCode />
       </button>
-      <button onClick={() => editor.chain().focus().unsetAllMarks().run()}>
-        clear marks
-      </button>
-      <button onClick={() => editor.chain().focus().clearNodes().run()}>
-        clear nodes
+      <button
+        onClick={() => editor.chain().focus().unsetAllMarks().run()}
+        className={buttonStyles}
+      >
+        <MdOutlineClearAll />
       </button>
       <button
         onClick={() => editor.chain().focus().setParagraph().run()}
-        className={editor.isActive("paragraph") ? "is-active" : ""}
+        className={`${buttonStyles} ${
+          editor.isActive("paragraph")
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
       >
-        paragraph
+        <PiParagraphLight />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={editor.isActive("heading", { level: 1 }) ? "is-active" : ""}
+        className={`${buttonStyles} ${
+          editor.isActive("heading", { level: 1 })
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
       >
-        h1
+        <LuHeading1 size={25} />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={editor.isActive("heading", { level: 2 }) ? "is-active" : ""}
+        className={`${buttonStyles} ${
+          editor.isActive("heading", { level: 2 })
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
       >
-        h2
+        <LuHeading2 size={20} />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        className={editor.isActive("heading", { level: 3 }) ? "is-active" : ""}
+        className={`${buttonStyles} ${
+          editor.isActive("heading", { level: 3 })
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
       >
-        h3
+        <LuHeading3 size={18} />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-        className={editor.isActive("heading", { level: 4 }) ? "is-active" : ""}
+        className={`${buttonStyles} ${
+          editor.isActive("heading", { level: 4 })
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
       >
-        h4
+        <LuHeading4 size={17} />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={editor.isActive("bulletList") ? "is-active" : ""}
+        className={`${buttonStyles} ${
+          editor.isActive("bulletList")
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
       >
-        bullet list
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={editor.isActive("orderedList") ? "is-active" : ""}
-      >
-        ordered list
+        <MdFormatListBulleted />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         className={editor.isActive("codeBlock") ? "is-active" : ""}
       >
-        code block
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        className={editor.isActive("blockquote") ? "is-active" : ""}
-      >
-        blockquote
-      </button>
-      <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-        horizontal rule
-      </button>
-      <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-        hard break
-      </button>
-      <button
-        onClick={() => editor.chain().focus().undo().run()}
-        disabled={!editor.can().chain().focus().undo().run()}
-      >
-        undo
-      </button>
-      <button
-        onClick={() => editor.chain().focus().redo().run()}
-        disabled={!editor.can().chain().focus().redo().run()}
-      >
-        redo
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setColor("#958DF1").run()}
-        className={
-          editor.isActive("textStyle", { color: "#958DF1" }) ? "is-active" : ""
-        }
-      >
-        purple
+        <BiCodeBlock />
       </button>
     </div>
   );
@@ -164,11 +172,24 @@ const extensions = [
     },
   }),
 ];
-const textEditor = () => {
-  const [content, setContent] = useState("e"); // Initial HTML
+const TextEditor = ({
+  editable,
+  vaultText,
+  vaultId,
+  authorId,
+  userId,
+}: {
+  editable: boolean;
+  vaultText: string;
+  vaultId: string;
+  authorId: string;
+  userId: string;
+}) => {
+  const [content, setContent] = useState(vaultText); // Initial HTML
 
   const editor = useEditor({
     content: content,
+    editable,
     extensions,
     onUpdate: ({ editor }) => {
       setContent(editor.getHTML());
@@ -176,17 +197,23 @@ const textEditor = () => {
   });
 
   return (
-    <>
-      <MenuBar editor={editor!} />
-      <EditorContent editor={editor} />
-      <button onClick={() => console.log(content)}>log</button>
-      <button
-        onClick={() => server_uploadHTML(content, "OVFuiCeBSMke1MzlNG3O")}
-      >
-        upload
-      </button>
-    </>
+    <div className="">
+      {editable && authorId == userId && <MenuBar editor={editor!} />}
+      <EditorContent
+        editor={editor}
+        readOnly={!editable}
+        aria-readonly={!editable}
+      />
+      {editable && authorId == userId && (
+        <Button
+          onClick={() => server_uploadHTML(content, vaultId)}
+          className="sticky bottom-10 shadow-lg"
+        >
+          Save
+        </Button>
+      )}
+    </div>
   );
 };
 
-export default textEditor;
+export default TextEditor;
