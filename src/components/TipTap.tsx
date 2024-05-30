@@ -7,11 +7,15 @@ import {
   MdFormatListBulleted,
   MdOutlineClearAll,
   MdOutlineCode,
+  MdOutlineFormatAlignCenter,
+  MdOutlineFormatAlignLeft,
+  MdOutlineFormatAlignRight,
   MdOutlineStrikethroughS,
 } from "react-icons/md";
 import { PiParagraphLight } from "react-icons/pi";
 import { LuHeading1, LuHeading2, LuHeading3, LuHeading4 } from "react-icons/lu";
 import { BiCodeBlock } from "react-icons/bi";
+import TextAlign from "@tiptap/extension-text-align";
 
 import ListItem from "@tiptap/extension-list-item";
 import TextStyle, { TextStyleOptions } from "@tiptap/extension-text-style";
@@ -149,9 +153,46 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
       </button>
       <button
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        className={editor.isActive("codeBlock") ? "is-active" : ""}
+        className={`${buttonStyles} ${
+          editor.isActive("codeBlock")
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
       >
         <BiCodeBlock />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().setTextAlign("left").run()}
+        className={`${buttonStyles} ${
+          editor.isActive("paragraph", { textAlign: "left" }) ||
+          editor.isActive("heading", { textAlign: "left" })
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
+      >
+        <MdOutlineFormatAlignLeft />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().setTextAlign("center").run()}
+        className={`${buttonStyles} ${
+          editor.isActive("paragraph", { textAlign: "center" }) ||
+          editor.isActive("heading", { textAlign: "center" })
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
+      >
+        <MdOutlineFormatAlignCenter />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().setTextAlign("right").run()}
+        className={`${buttonStyles} ${
+          editor.isActive("paragraph", { textAlign: "right" }) ||
+          editor.isActive("heading", { textAlign: "right" })
+            ? "is-active bg-muted"
+            : "hover:text-accent-foreground/20"
+        }`}
+      >
+        <MdOutlineFormatAlignRight />
       </button>
     </div>
   );
@@ -161,6 +202,9 @@ const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
   // @ts-ignore
   TextStyle.configure({ types: [ListItem.name] }),
+  TextAlign.configure({
+    types: ["heading", "paragraph"],
+  }),
   StarterKit.configure({
     bulletList: {
       keepMarks: true,

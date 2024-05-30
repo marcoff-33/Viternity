@@ -1,7 +1,4 @@
-import { ImagesCarousel } from "@/components/ImagesCarousel";
-import Tiptap from "@/components/TipTap";
 import VaultTemplate from "@/components/VaultTemplate";
-import FileUploader from "@/components/fileUploader";
 import { auth } from "@clerk/nextjs/server";
 
 import React from "react";
