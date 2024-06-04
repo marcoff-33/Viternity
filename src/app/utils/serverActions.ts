@@ -14,6 +14,7 @@ import {
   updateDoc,
   FieldValue,
   arrayUnion,
+  deleteDoc,
 } from "firebase/firestore";
 import { Vault } from "../../components/UserVaults";
 import {
@@ -23,6 +24,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { url } from "inspector";
+import { revalidatePath } from "next/cache";
 
 export const server_handleUser = async () => {
   const { userId } = auth();
@@ -99,6 +101,8 @@ export const server_createVault = async ({
         plan: "free",
         style: vaultStyle,
         authorId: userId,
+        imageUrls: [],
+        vaultText: "",
       },
       { merge: true }
     );
@@ -210,5 +214,22 @@ export const server_getVaultTextContent = async (textFileUrl: string) => {
     return text;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const server_deleteVault = async (vaultId: string) => {
+  try {
+    const db = getFirestore(firebase_app);
+    const vaultRef = doc(db, "vaults", vaultId);
+    await deleteDoc(vaultRef);
+    revalidatePath("/dashboard");
+    const { userId } = auth();
+    const userRef = doc(db, "users", userId!);
+    const userSnap = await getDoc(userRef);
+    const userData = userSnap.data();
+    const ownedVaults = userData?.ownedVaults;
+    await updateDoc(userRef, { ownedVaults: ownedVaults - 1 });
+  } catch (error) {
+    return `Error deleting vault: ${error}`;
   }
 };

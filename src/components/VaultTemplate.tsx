@@ -9,8 +9,6 @@ import {
 } from "@/app/utils/serverActions";
 import { ImagesCarousel } from "./ImagesCarousel";
 import TextEditor from "./TipTap";
-import { Underdog } from "next/font/google";
-import { text } from "stream/consumers";
 
 export default function VaultTemplate({
   userId,
@@ -20,7 +18,7 @@ export default function VaultTemplate({
   isEditable: boolean;
 }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
-  const [vaultText, setVaultText] = useState<string | undefined>(undefined);
+  const [vaultText, setVaultText] = useState<string | undefined>("");
 
   const handleFirstLoad = async () => {
     const data = await server_getVaultData(vaultId);
