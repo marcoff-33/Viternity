@@ -47,7 +47,7 @@ export default function newVaultDrawer() {
         <DialogTrigger asChild>
           <Button variant="outline">+</Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] p-5">
           <DialogHeader>
             <DialogTitle>Set up a new Vault</DialogTitle>
             <DialogDescription>
