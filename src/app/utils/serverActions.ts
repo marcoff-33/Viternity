@@ -36,18 +36,13 @@ export const server_handleUser = async () => {
   if (docSnap.exists()) {
     console.log("User already exists in the database.");
   } else if (userId) {
-    await setDoc(docRef, { plan: "free" }, { merge: true });
+    await setDoc(docRef, { plan: "free", ownedVaults: 0 }, { merge: true });
     console.log("User created and added to db");
-
-    const vaultsCollection = collection(db, "users", userId!, "vaults");
-    const prootsDoc = doc(vaultsCollection, "proots");
-    await setDoc(prootsDoc, {}, { merge: true });
-    console.log("Proots document created under vaults collection for the user");
   } else {
     console.error("Nothing Happened");
   }
 };
-
+// todo: refactor create user logic
 export const server_getUserVaults = async () => {
   const { userId } = auth();
   const db = getFirestore(firebase_app);
@@ -74,9 +69,11 @@ export const server_createVault = async ({
 }) => {
   const { userId } = auth();
   const db = getFirestore(firebase_app);
-
+  await server_handleUser();
   const userRef = doc(db, "users", userId!);
+
   const userSnap = await getDoc(userRef);
+
   const userData = userSnap.data();
   const ownedVaults = userData?.ownedVaults;
   const userPlan = userData?.plan;
