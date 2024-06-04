@@ -7,10 +7,12 @@ import React from "react";
 export default function page() {
   const { userId } = auth();
   return (
-    <div className="bg-red-50 flex justify-center min-h-screen flex-col container relative">
+    <div className="flex justify-center min-h-screen flex-col container relative">
       {userId ? (
         <>
-          <UserButton />
+          <div className="absolute top-10 right-0 z-50">
+            <UserButton />
+          </div>
           <VaultTemplate isEditable={true} userId={userId} />
           <div className="sticky bottom-20 right-[50%]">
             <QrCodeModal />

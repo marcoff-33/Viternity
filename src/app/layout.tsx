@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider, UserButton } from "@clerk/nextjs";
+import Navbar from "@/components/Navbar";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +21,12 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="min-h-screen">{children}</body>
+        <body className="min-h-screen">
+          <Suspense fallback={<Loading />}>
+            <Navbar />
+            {children}
+          </Suspense>
+        </body>
       </html>
     </ClerkProvider>
   );

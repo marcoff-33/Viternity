@@ -243,17 +243,21 @@ const TextEditor = ({
   return (
     <div className="">
       {editable && authorId == userId && <MenuBar editor={editor!} />}
-      <EditorContent
-        editor={editor}
-        readOnly={!editable}
-        aria-readonly={!editable}
-      />
+      <div
+        className={`${editable && "border-red-500 border-[2px] animate-pulse"}`}
+      >
+        <EditorContent
+          editor={editor}
+          readOnly={!editable}
+          aria-readonly={!editable}
+        />
+      </div>
       {editable && authorId == userId && (
         <Button
           onClick={() => server_uploadHTML(content, vaultId)}
-          className="sticky bottom-10 shadow-lg"
+          className="sticky bottom-10 shadow-lg w-full my-10"
         >
-          Save
+          Save Text
         </Button>
       )}
     </div>

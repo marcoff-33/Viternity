@@ -6,7 +6,7 @@ import { Vault } from "./UserVaults";
 import { server_getVaultData } from "@/app/utils/serverActions";
 import { ImagesCarousel } from "./ImagesCarousel";
 
-export default function vaultEditor({ userId }: { userId: string }) {
+export default function VaultEditor({ userId }: { userId: string }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
 
   const handleFirstLoad = async () => {

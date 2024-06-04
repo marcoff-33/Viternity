@@ -37,7 +37,7 @@ import {
 import { server_createVault } from "../app/utils/serverActions";
 import { useRouter } from "next/navigation";
 
-export default function newVaultDrawer() {
+export default function NewVaultDrawer() {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 

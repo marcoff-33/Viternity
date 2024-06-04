@@ -24,8 +24,12 @@ export default function userVaults({ vaults }: { vaults: Vault[] }) {
       {vaults.map((vault, i) => (
         <div className="" key={i}>
           <VaultButton vaultName={vault.name} vaultId={vault.id} />
-          <Link href={`/edit/${vault.id}`}>Edit</Link>
-          <DeleteVaultButton vaultId={vault.id} />
+          <div className="flex gap-5 my-1">
+            <Button asChild>
+              <Link href={`/edit/${vault.id}`}>Edit</Link>
+            </Button>
+            <DeleteVaultButton vaultId={vault.id} />
+          </div>
         </div>
       ))}
     </div>

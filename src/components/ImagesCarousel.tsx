@@ -38,7 +38,10 @@ export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
 
   return (
     <Dialog>
-      <DialogTrigger className="max-h-fit self-center">
+      <DialogTrigger
+        className="max-h-fit self-center"
+        disabled={vaultImages.length == 0}
+      >
         <div className="w-[300px] rounded-lg">
           <AspectRatio
             ratio={5 / 4}
@@ -51,9 +54,9 @@ export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
                   size={30}
                 />
                 <img
-                  src={vaultImages![1]}
+                  src={vaultImages![0]}
                   alt=""
-                  className="object-cover object-center absolute h-full w-full rounded-lg bg-accent/10"
+                  className="object-cover object-center absolute h-full w-full rounded-lg bg-muted-foreground"
                   loading="lazy"
                 />
               </>

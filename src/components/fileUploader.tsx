@@ -39,7 +39,11 @@ export default function FileUploader({ vaultId }: { vaultId: string }) {
   return (
     <div>
       <Input type="file" onChange={handleFileChange} />
-      <Button disabled={uploading} variant={"default"} onClick={handleUpload}>
+      <Button
+        disabled={uploading || !file}
+        variant={"default"}
+        onClick={handleUpload}
+      >
         {uploading ? "Uploading ..." : "Upload"}
       </Button>
       {error && <p>{error}</p>}

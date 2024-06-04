@@ -1,3 +1,8 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    // THIS IS TEMPORARY, JUST FOR TESTING PURPOSES
+    "react-hooks/exhaustive-deps": "off"
+  }
 }
