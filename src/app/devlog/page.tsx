@@ -20,6 +20,10 @@ export default function page() {
           salvato
         </p>
         <p>cambiamento del colore del testo e del background delle Vault</p>
+        <p>
+          6/5/2024 19:11:10 fixato bug che impediva il text editor da caricare
+          in caso di testo vuoto
+        </p>
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ export default function VaultTemplate({
   isEditable: boolean;
 }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
-  const [vaultText, setVaultText] = useState<string | undefined>("");
+  const [vaultText, setVaultText] = useState<string | undefined>("<p></p>");
   const [loadEditor, setLoadEditor] = useState<boolean>(false);
 
   const handleFirstLoad = async () => {
@@ -28,9 +28,10 @@ export default function VaultTemplate({
     setVaultData(data);
   };
   const loadVaultText = async () => {
-    console.log(vaultData?.vaultText || "Nothing in here yet ...");
-    const text = await server_getVaultTextContent(vaultData?.vaultText!);
-    setVaultText(text);
+    if (vaultData && vaultData.vaultText) {
+      const text = await server_getVaultTextContent(vaultData.vaultText);
+      setVaultText(text);
+    }
   };
 
   useEffect(() => {

@@ -27,7 +27,7 @@ import {
   useEditor,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { server_uploadHTML } from "@/app/utils/serverActions";
 
@@ -240,6 +240,13 @@ const TextEditor = ({
     },
   });
 
+  useEffect(() => {
+    if (editor) {
+      editor.commands.setContent(vaultText);
+      console.log("set content", editor);
+    }
+  }, [vaultText, editor]);
+
   return (
     <div className="">
       {editable && authorId == userId && <MenuBar editor={editor!} />}
@@ -258,7 +265,7 @@ const TextEditor = ({
       {editable && authorId == userId && (
         <Button
           onClick={() => server_uploadHTML(content, vaultId)}
-          className="sticky bottom-10 shadow-lg w-full my-10"
+          className="sticky bottom-10 shadow-lg w-full my-10 z-50"
         >
           Save Text
         </Button>
