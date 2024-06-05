@@ -15,9 +15,6 @@ interface CardProps extends React.ComponentProps<typeof Card> {
 }
 
 export function PriceCard({ className, planType, ...props }: CardProps) {
-  const freeDescription =
-    "Perfect to try out Viternity before making a purchase, Downloadable Qr Code included";
-  const premiumDescription = "lol";
   const freePlan = ["1 Photo/Video", "255 Characters Limit"];
   const premiumPlan = [
     "10 Photos/Videos",
@@ -65,7 +62,12 @@ export function PriceCard({ className, planType, ...props }: CardProps) {
     >
       <CardHeader>
         <CardTitle>
-          <p className="text-center">{planType} Plan</p>
+          <div className="">
+            <p className="text-center text-lg">{planType} Plan</p>
+            <p className="text-center font-light text-sm text-muted-foreground">
+              ~~~! description to be added later !~~~~
+            </p>
+          </div>
         </CardTitle>
         <CardDescription className="text-center py-5 text-4xl font-bold text-accent-foreground">
           {prices}
@@ -74,7 +76,7 @@ export function PriceCard({ className, planType, ...props }: CardProps) {
       <CardContent className="flex flex-col gap-1 px-10 pb-5">
         {cardFeatures.map((featureName, index) => (
           <div key={index} className="flex flex-row gap-5">
-            <GiCheckMark className="text-primary" />
+            <GiCheckMark className="text-primary self-center" />
             <div className="grow">{featureName}</div>
           </div>
         ))}
