@@ -5,6 +5,7 @@ import { ClerkProvider, UserButton } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
 import { Suspense } from "react";
 import Loading from "./loading";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,8 @@ export default function RootLayout({
         <body className="min-h-screen">
           <Suspense fallback={<Loading />}>
             <Navbar />
-            {children}
+            <main>{children}</main>
+            <Toaster />
           </Suspense>
         </body>
       </html>

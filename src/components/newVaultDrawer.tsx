@@ -36,6 +36,8 @@ import {
 } from "./ui/select";
 import { server_createVault } from "../app/utils/serverActions";
 import { useRouter } from "next/navigation";
+import { title } from "process";
+import { toast } from "./ui/use-toast";
 
 export default function NewVaultDrawer() {
   const [open, setOpen] = useState(false);
@@ -108,6 +110,10 @@ function ProfileForm({
     event.preventDefault();
     try {
       await server_createVault(newVault);
+      toast({
+        title: "Success !",
+        description: "A new vault has been created",
+      });
       setOpen(false);
       router.refresh();
     } catch (err) {

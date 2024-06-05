@@ -13,6 +13,7 @@ export default function page() {
           <div className="absolute top-10 right-0 z-50">
             <UserButton />
           </div>
+
           <VaultTemplate isEditable={true} userId={userId} />
           <div className="sticky bottom-20 right-[50%]">
             <QrCodeModal />
