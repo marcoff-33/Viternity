@@ -6,7 +6,7 @@ import React from "react";
 export default async function page() {
   const { userId } = auth();
   return (
-    <div className="flex justify-center min-h-screen flex-col container relative">
+    <div className="bg-accent-foreground flex justify-start pt-24 min-h-screen flex-col container relative">
       {userId && <VaultTemplate isEditable={false} userId={userId} />}
     </div>
   );

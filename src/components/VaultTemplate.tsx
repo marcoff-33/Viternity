@@ -21,6 +21,7 @@ export default function VaultTemplate({
 }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
   const [vaultText, setVaultText] = useState<string | undefined>("");
+  const [loadEditor, setLoadEditor] = useState<boolean>(false);
 
   const handleFirstLoad = async () => {
     const data = await server_getVaultData(vaultId);
@@ -37,8 +38,9 @@ export default function VaultTemplate({
   }, []);
 
   useEffect(() => {
-    if (vaultData && vaultData.vaultText) {
+    if (vaultData) {
       loadVaultText();
+      setLoadEditor(true);
       console.log("loaded", vaultData, vaultId);
     }
   }, [vaultData]);
@@ -46,7 +48,7 @@ export default function VaultTemplate({
   const pathName = usePathname();
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
   return (
-    <div className="flex justify-center flex-col">
+    <div className="flex justify-center flex-col w-full">
       {vaultData?.imageUrls.length == 0 && isEditable && (
         <div className="flex justify-center items-center">
           Start by uploading an image and adding some text. Max 10mb size per
@@ -54,16 +56,16 @@ export default function VaultTemplate({
         </div>
       )}
       {vaultData && (
-        <>
+        <div className="self-center ">
           {isEditable && <FileUploader vaultId={vaultId} />}
           <ImagesCarousel vaultImages={vaultData!.imageUrls} />
-        </>
+        </div>
       )}
       <div className="flex flex-col justify-center items-center gap-5 w-full">
-        {vaultData && (
+        {loadEditor && vaultText && (
           <TextEditor
             editable={isEditable}
-            vaultText={vaultText!}
+            vaultText={vaultText}
             vaultId={vaultId}
             authorId={vaultData!.authorId}
             userId={userId}

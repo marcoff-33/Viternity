@@ -244,9 +244,12 @@ const TextEditor = ({
     <div className="">
       {editable && authorId == userId && <MenuBar editor={editor!} />}
       <div
-        className={`${editable && "border-red-500 border-[2px] animate-pulse"}`}
+        className={`text-primary-foreground ${
+          editable && "border-red-500 border-[2px] animate-pulse"
+        }`}
       >
         <EditorContent
+          content={content}
           editor={editor}
           readOnly={!editable}
           aria-readonly={!editable}

@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="min-h-screen">
+        <body className="min-h-screen bg-accent-foreground">
           <Suspense fallback={<Loading />}>
             <Navbar />
             <main>{children}</main>

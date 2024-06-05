@@ -13,6 +13,14 @@ export default function page() {
           nuovo Vault
         </p>
       </div>
+      <div className="text-accent flex flex-row gap-10 justify-center">
+        <h2>0.0.2:</h2>
+        <p>
+          Fixato bug che impediva il testo di essere visualizzato dopo averlo
+          salvato
+        </p>
+        <p>cambiamento del colore del testo e del background delle Vault</p>
+      </div>
     </div>
   );
 }

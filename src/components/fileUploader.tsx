@@ -38,7 +38,11 @@ export default function FileUploader({ vaultId }: { vaultId: string }) {
 
   return (
     <div>
-      <Input type="file" onChange={handleFileChange} />
+      <Input
+        type="file"
+        onChange={handleFileChange}
+        className="text-primary-foreground"
+      />
       <Button
         disabled={uploading || !file}
         variant={"default"}
