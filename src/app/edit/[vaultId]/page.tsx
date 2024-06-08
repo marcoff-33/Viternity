@@ -1,5 +1,7 @@
+import OtpInput from "@/components/OtpInput";
 import QrCodeModal from "@/components/QrCodeModal";
 import VaultTemplate from "@/components/VaultTemplate";
+import { InputOTP } from "@/components/ui/input-otp";
 import { UserButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import React from "react";
@@ -10,10 +12,6 @@ export default function page() {
     <div className="flex justify-center min-h-screen flex-col container relative">
       {userId ? (
         <>
-          <div className="absolute top-10 right-0 z-50">
-            <UserButton />
-          </div>
-
           <VaultTemplate isEditable={true} userId={userId} />
           <div className="sticky bottom-20 right-[50%]">
             <QrCodeModal />

@@ -34,7 +34,7 @@ export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
     api.on("select", () => {
       setCurrent(api.selectedScrollSnap() + 1);
     });
-  }, [api]);
+  }, [vaultImages, api]);
 
   return (
     <Dialog>
@@ -57,7 +57,6 @@ export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
                   src={vaultImages![0]}
                   alt=""
                   className="object-cover object-center absolute h-full w-full rounded-lg bg-muted-foreground"
-                  loading="lazy"
                 />
               </>
             )}

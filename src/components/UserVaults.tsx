@@ -12,6 +12,7 @@ export type Vault = {
   style: string;
   imageUrls: string[];
   vaultText: string;
+  vaultPassword: string;
 };
 
 export default function userVaults({ vaults }: { vaults: Vault[] }) {

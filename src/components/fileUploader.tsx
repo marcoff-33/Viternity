@@ -1,18 +1,30 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { server_uploadFile } from "../app/utils/serverActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePathname } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
-export default function FileUploader({ vaultId }: { vaultId: string }) {
+export default function FileUploader({
+  vaultId,
+  onUploadSuccess,
+}: {
+  vaultId: string;
+  onUploadSuccess: (newImageUrl: string) => void;
+}) {
   const [file, setFile] = useState<FormData | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [error, setError] = useState<null | string>(null);
   const [uploading, setUploading] = useState(false);
   const pathName = usePathname();
-  console.log(pathName);
+
+  useEffect(() => {
+    if (file) {
+      handleUpload();
+    }
+  }, [file]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -25,10 +37,11 @@ export default function FileUploader({ vaultId }: { vaultId: string }) {
   const handleUpload = async () => {
     if (!file) console.log("nofile");
     setUploading(true);
-    console.log("tryubg");
+
     try {
       const url = await server_uploadFile(file!, vaultId);
       setFileUrl(url);
+      onUploadSuccess(url);
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -37,25 +50,20 @@ export default function FileUploader({ vaultId }: { vaultId: string }) {
   };
 
   return (
-    <div>
+    <div className="border border-red-500 relative">
       <Input
         type="file"
-        onChange={handleFileChange}
-        className="text-primary-foreground"
+        className="text-transparent"
+        onChange={(event) => {
+          handleFileChange(event);
+        }}
       />
-      <Button
-        disabled={uploading || !file}
-        variant={"default"}
-        onClick={handleUpload}
-      >
-        {uploading ? "Uploading ..." : "Upload"}
-      </Button>
+      <p className="absolute inset-0 text-primary -z-50">
+        {uploading ? "Uploading..." : "Upload Photo"}
+      </p>
+      <button onClick={handleUpload}>Upload</button>
+      <p className="text-white">{}</p>
       {error && <p>{error}</p>}
-      {fileUrl && (
-        <p>
-          File uploaded: <a href={fileUrl}>{fileUrl}</a>
-        </p>
-      )}
     </div>
   );
 }

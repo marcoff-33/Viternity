@@ -146,7 +146,7 @@ export const server_uploadFile = async (
     console.log(downloadURL);
     await server_addLinkToVault(vaultId, downloadURL);
     console.log("image linked to user's db");
-    return filename; // Return the unique filename
+    return downloadURL; // Return the unique filename
   } catch (e) {
     console.log(`${e},`, userId);
     return "Image Upload failed";

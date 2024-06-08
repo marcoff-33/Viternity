@@ -70,6 +70,10 @@ const config = {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
         },
+        "caret-blink": {
+          "0%,70%,100%": { opacity: "1" },
+          "20%,50%": { opacity: "0" },
+        },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
@@ -116,6 +120,7 @@ const config = {
         third: "moveInCircle 100s linear infinite",
         fourth: "moveHorizontal 100s ease infinite",
         fifth: "moveInCircle 55s ease infinite",
+        "caret-blink": "caret-blink 1.25s ease-out infinite",
       },
     },
   },
