@@ -12,6 +12,8 @@ import TextEditor from "./TipTap";
 import FileUploader from "./fileUploader";
 import { Editor } from "@tiptap/react";
 import OtpInput from "./OtpInput";
+import path from "path";
+import QrCodeModal from "./QrCodeModal";
 
 export default function VaultTemplate({
   userId,
@@ -23,7 +25,10 @@ export default function VaultTemplate({
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
   const [vaultText, setVaultText] = useState<string | undefined>("<p></p>");
   const [loadEditor, setLoadEditor] = useState<boolean>(false);
-  const [otpIsCorrect, setOtpIsCorrect] = useState<boolean>(false);
+  const pathName = usePathname();
+  const [otpIsCorrect, setOtpIsCorrect] = useState<boolean>(
+    pathName.includes("edit") ? false : true
+  );
 
   const handleFirstLoad = async () => {
     const data = await server_getVaultData(vaultId);
@@ -58,12 +63,14 @@ export default function VaultTemplate({
     }
   };
 
-  const pathName = usePathname();
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
   return (
     <div className="">
       {otpIsCorrect ? (
         <div className="flex justify-center flex-col w-full">
+          {isEditable && (
+            <FileUploader vaultId={vaultId} onUploadSuccess={handleNewImage} />
+          )}
           {vaultData?.imageUrls.length == 0 && isEditable && (
             <div className="flex justify-center items-center">
               Start by uploading an image and adding some text. Max 10mb size
@@ -71,17 +78,11 @@ export default function VaultTemplate({
             </div>
           )}
           {vaultData && (
-            <div className="self-center ">
-              {isEditable && (
-                <FileUploader
-                  vaultId={vaultId}
-                  onUploadSuccess={handleNewImage}
-                />
-              )}
+            <div className="self-center border border-white">
               <ImagesCarousel vaultImages={vaultData!.imageUrls} />
             </div>
           )}
-          <div className="flex flex-col justify-center items-center gap-5 w-full">
+          <div className="py-10 flex flex-col justify-center items-center gap-5 w-full">
             {loadEditor && vaultText && (
               <TextEditor
                 editable={isEditable}
@@ -91,11 +92,12 @@ export default function VaultTemplate({
                 userId={userId}
               />
             )}
+            {isEditable && otpIsCorrect && <QrCodeModal />}
           </div>
         </div>
       ) : (
         <div className="flex justify-center items-center">
-          {vaultData && (
+          {vaultData && isEditable && (
             <OtpInput
               vaultPassword={vaultData!.vaultPassword}
               setOtpIsCorrect={setOtpIsCorrect}

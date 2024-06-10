@@ -22,16 +22,17 @@ export default function OtpInput({
       ? setOtpIsCorrect(true)
       : setError("Wrong Password");
   };
-  const correctOtp = "310560";
+  const correctOtp = "123456";
   return (
     <div className="">
       <InputOTP
         maxLength={6}
         onChange={(value) => setCurrentOtpValue(value)}
-        className="text-white"
+        className="text-white font-bold text-lg"
+        autoFocus
       >
-        <InputOTPGroup>
-          <InputOTPSlot index={0} />
+        <InputOTPGroup autoFocus inputMode="text">
+          <InputOTPSlot index={0} autoFocus />
           <InputOTPSlot index={1} />
           <InputOTPSlot index={2} />
         </InputOTPGroup>
@@ -42,10 +43,12 @@ export default function OtpInput({
           <InputOTPSlot index={5} onChange={(e) => console.log("last input")} />
         </InputOTPGroup>
       </InputOTP>
-      <Button onClick={handleClick} className="z-[1000]">
-        Submit {currentOtpValue}
-      </Button>
-      <p className="text-white">{error}</p>
+      <div className="w-full items-center flex justify-center py-5 flex-col gap-2">
+        <p className="text-red-500">{error ? `${error} !` : ""}</p>
+        <Button onClick={handleClick} className="z-[1000] self-center">
+          Submit
+        </Button>
+      </div>
     </div>
   );
 }

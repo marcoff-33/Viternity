@@ -50,10 +50,10 @@ export default function FileUploader({
   };
 
   return (
-    <div className="border border-red-500 relative">
+    <div className="self-end text-center items-center font-semibold sm:text-lg relative bg-accent-foreground text-primary max-w-fit sm:pr-10 ">
       <Input
         type="file"
-        className="text-transparent"
+        className="text-transparent absolute flex justify-center items-center text-center"
         onChange={(event) => {
           handleFileChange(event);
         }}
@@ -61,9 +61,9 @@ export default function FileUploader({
       <p className="absolute inset-0 text-primary -z-50">
         {uploading ? "Uploading..." : "Upload Photo"}
       </p>
-      <button onClick={handleUpload}>Upload</button>
-      <p className="text-white">{}</p>
-      {error && <p>{error}</p>}
+      <button onClick={handleUpload} className="w-full text-center ">
+        + Upload Photo
+      </button>
     </div>
   );
 }

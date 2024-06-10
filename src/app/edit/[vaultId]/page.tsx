@@ -13,9 +13,7 @@ export default function page() {
       {userId ? (
         <>
           <VaultTemplate isEditable={true} userId={userId} />
-          <div className="sticky bottom-20 right-[50%]">
-            <QrCodeModal />
-          </div>
+          <div className="sticky bottom-20 right-[50%]"></div>
         </>
       ) : (
         <div className="">You need to be logged in to edit this vault.</div>
