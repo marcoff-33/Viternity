@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   InputOTP,
   InputOTPGroup,
@@ -7,6 +8,7 @@ import {
 } from "./ui/input-otp";
 import { Vault } from "./UserVaults";
 import { Button } from "./ui/button";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 
 export default function OtpInput({
   vaultPassword,
@@ -30,6 +32,7 @@ export default function OtpInput({
         onChange={(value) => setCurrentOtpValue(value)}
         className="text-white font-bold text-lg"
         autoFocus
+        pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
       >
         <InputOTPGroup autoFocus inputMode="text">
           <InputOTPSlot index={0} autoFocus />

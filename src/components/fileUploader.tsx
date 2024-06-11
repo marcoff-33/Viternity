@@ -39,6 +39,7 @@ export default function FileUploader({
     setUploading(true);
 
     try {
+      setUploading(true);
       const url = await server_uploadFile(file!, vaultId);
       setFileUrl(url);
       onUploadSuccess(url);
@@ -62,7 +63,7 @@ export default function FileUploader({
         {uploading ? "Uploading..." : "Upload Photo"}
       </p>
       <button onClick={handleUpload} className="w-full text-center ">
-        + Upload Photo
+        {uploading ? "Uploading..." : "Upload Photo"}
       </button>
     </div>
   );

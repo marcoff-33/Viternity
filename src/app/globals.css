@@ -74,7 +74,7 @@
 
   h1 {
     /* Inherited font properties from Tailwind */
-    margin-top: 2rem; /* scroll-m-20 */
+
     font-size: 3rem; /* text-4xl */
     font-weight: 800; /* font-extrabold */
     letter-spacing: -0.05em; /* tracking-tight */

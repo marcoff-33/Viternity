@@ -39,7 +39,7 @@ export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
   return (
     <Dialog>
       <DialogTrigger
-        className="max-h-fit self-center"
+        className="max-h-fit self-center outline-none"
         disabled={vaultImages.length == 0}
       >
         <div className="w-[300px] rounded-lg">

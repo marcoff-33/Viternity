@@ -63,9 +63,15 @@ export const server_getUserVaults = async () => {
 export const server_createVault = async ({
   vaultStyle,
   vaultName,
+  isPrivate,
+  userPassword,
+  adminPassword,
 }: {
   vaultStyle: string;
   vaultName: string;
+  isPrivate: boolean;
+  userPassword: string;
+  adminPassword: string;
 }) => {
   const { userId } = auth();
   const db = getFirestore(firebase_app);
@@ -100,6 +106,9 @@ export const server_createVault = async ({
         authorId: userId,
         imageUrls: [],
         vaultText: "",
+        isPrivate,
+        userPassword,
+        adminPassword,
       },
       { merge: true }
     );

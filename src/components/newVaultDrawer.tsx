@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import { z } from "zod";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -95,10 +95,37 @@ function ProfileForm({
 }) {
   const [vaultName, setVaultName] = useState("Unnamed Vault");
   const [vaultStyle, setVaultStyle] = useState("default");
+  const [userPassword, setUserPassword] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
+  const [isPrivate, setIsPrivate] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const newVault = { vaultName, vaultStyle };
+  const vaultSchema = z
+    .object({
+      vaultName: z.string(),
+      vaultStyle: z.string(),
+      userPassword: z
+        .string()
+        .length(6, "User password must be exactly 6 characters"),
+      adminPassword: z
+        .string()
+        .length(6, "Admin password must be exactly 6 characters"),
+      isPrivate: z.boolean(),
+    })
+    .refine((data) => data.userPassword !== data.adminPassword, {
+      message: "User password and admin password must be different",
+      path: ["adminPassword"], // This will highlight the adminPassword field if the error is thrown
+    });
+
+  const newVault = {
+    vaultName,
+    vaultStyle,
+    userPassword, // must be exactly 6 characters
+    adminPassword, // must be exactly 6 characters
+    isPrivate,
+  };
+
   const handleInputChange = (
     setState: React.Dispatch<SetStateAction<string>>,
     event: React.ChangeEvent<HTMLInputElement>
@@ -106,19 +133,31 @@ function ProfileForm({
     setState(event.target.value);
   };
 
+  const isValidSchema = vaultSchema.safeParse(newVault);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    try {
-      await server_createVault(newVault);
+    const result = vaultSchema.safeParse(newVault);
+    if (result.success) {
+      try {
+        await server_createVault(newVault);
+        toast({
+          title: "Success!",
+          description: "A new vault has been created",
+        });
+        setOpen(false);
+        router.refresh();
+      } catch (err) {
+        const error = err as Error;
+        setError(error.message);
+      }
+    } else {
+      const firstError = result.error.issues[0].message;
+      setError(firstError);
       toast({
-        title: "Success !",
-        description: "A new vault has been created",
+        title: "Oops!",
+        description: firstError,
       });
-      setOpen(false);
-      router.refresh();
-    } catch (err) {
-      const error = err as Error;
-      setError(error.message);
     }
   };
 
@@ -136,8 +175,24 @@ function ProfileForm({
         />
       </div>
       <div className="grid gap-2">
+        <Label htmlFor="vaultName">Admin Password</Label>
+        <Input
+          id="vaultName"
+          placeholder="Must be exactly 6 numbers"
+          onChange={(event) => handleInputChange(setAdminPassword, event)}
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="vaultName">User Password</Label>
+        <Input
+          id="vaultName"
+          placeholder="Must be exactly 6 numbers"
+          onChange={(event) => handleInputChange(setUserPassword, event)}
+        />
+      </div>
+      <div className="grid gap-2">
         <Select disabled>
-          <Label>Vault Theme</Label>
+          <Label>Vault Theme {isValidSchema.error ? "yes" : "no"} </Label>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a Theme" />
           </SelectTrigger>
@@ -154,9 +209,7 @@ function ProfileForm({
         </Select>
       </div>
       {error && <div className="text-red-500 text-sm font-bold">{error}</div>}
-      <Button type="submit" disabled={error !== null}>
-        Create Vault
-      </Button>
+      <Button type="submit">Create Vault</Button>
     </form>
   );
 }

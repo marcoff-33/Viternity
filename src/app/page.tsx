@@ -34,7 +34,7 @@ export default function Home() {
           </div>
           <div className="flex flex-row">
             <Button asChild>
-              <Link href="/dashboard">Create A Vault</Link>
+              <Link href="/dashboard">Our Offers</Link>
             </Button>
             <Button
               asChild
@@ -42,7 +42,8 @@ export default function Home() {
               className="hover:bg-transparent hover:text-primary-foreground text-primary-foreground"
             >
               <Link href="/dashboard">
-                Learn More <FaLongArrowAltRight />
+                Try it out for free
+                <FaLongArrowAltRight className="mx-1" />
               </Link>
             </Button>
           </div>

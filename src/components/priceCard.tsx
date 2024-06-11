@@ -21,7 +21,7 @@ export function PriceCard({ className, planType, ...props }: CardProps) {
     "No Character Limit",
     "2 Voice Messages",
     "Private Page Option with Password",
-    "Plastic Qr Code With Frame",
+    "Qr Code With Frame",
     "Two Languages Support",
   ];
   const tailoredPlan = [
@@ -39,6 +39,13 @@ export function PriceCard({ className, planType, ...props }: CardProps) {
 
   const prices =
     planType === "Free" ? "€0" : planType === "Premium" ? "€49.99" : "€99.99";
+
+  const descriptions =
+    planType == "Free"
+      ? "A limited version of Viternity, Comes with a custom QR code that you can save / print by yourself"
+      : planType == "Premium"
+      ? "Premium Plan"
+      : "Tailored Plan";
 
   const cardFeatures =
     planType === "Free"
@@ -63,9 +70,11 @@ export function PriceCard({ className, planType, ...props }: CardProps) {
       <CardHeader>
         <CardTitle>
           <div className="">
-            <p className="text-center text-lg">{planType} Plan</p>
+            <p className="text-center text-lg">
+              {planType} {planType == "Free" ? "Trial" : ""}
+            </p>
             <p className="text-center font-light text-sm text-muted-foreground">
-              ~~~! description to be added later !~~~~
+              {descriptions}
             </p>
           </div>
         </CardTitle>

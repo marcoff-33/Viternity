@@ -15,13 +15,7 @@ import OtpInput from "./OtpInput";
 import path from "path";
 import QrCodeModal from "./QrCodeModal";
 
-export default function VaultTemplate({
-  userId,
-  isEditable,
-}: {
-  userId: string;
-  isEditable: boolean;
-}) {
+export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
   const [vaultText, setVaultText] = useState<string | undefined>("<p></p>");
   const [loadEditor, setLoadEditor] = useState<boolean>(false);
@@ -65,7 +59,7 @@ export default function VaultTemplate({
 
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
   return (
-    <div className="">
+    <div className="py-20">
       {otpIsCorrect ? (
         <div className="flex justify-center flex-col w-full">
           {isEditable && (
@@ -78,7 +72,7 @@ export default function VaultTemplate({
             </div>
           )}
           {vaultData && (
-            <div className="self-center border border-white">
+            <div className="self-center">
               <ImagesCarousel vaultImages={vaultData!.imageUrls} />
             </div>
           )}
@@ -88,8 +82,6 @@ export default function VaultTemplate({
                 editable={isEditable}
                 vaultText={vaultText}
                 vaultId={vaultId}
-                authorId={vaultData!.authorId}
-                userId={userId}
               />
             )}
             {isEditable && otpIsCorrect && <QrCodeModal />}
