@@ -220,14 +220,10 @@ const TextEditor = ({
   editable,
   vaultText,
   vaultId,
-  authorId,
-  userId,
 }: {
   editable: boolean;
   vaultText: string;
   vaultId: string;
-  authorId: string;
-  userId: string;
 }) => {
   const [content, setContent] = useState(vaultText); // Initial HTML
 
@@ -249,7 +245,7 @@ const TextEditor = ({
 
   return (
     <div className="">
-      {editable && authorId == userId && <MenuBar editor={editor!} />}
+      {editable && <MenuBar editor={editor!} />}
       <div
         className={`text-primary-foreground ${
           editable && "border-red-500 border-[2px] animate-pulse"
@@ -262,7 +258,7 @@ const TextEditor = ({
           aria-readonly={!editable}
         />
       </div>
-      {editable && authorId == userId && (
+      {editable && (
         <Button
           onClick={() => server_uploadHTML(content, vaultId)}
           className="sticky bottom-10 shadow-lg w-full my-10 z-50"

@@ -44,7 +44,7 @@ export function PriceCard({ className, planType, ...props }: CardProps) {
     planType == "Free"
       ? "A limited version of Viternity, Comes with a custom QR code that you can save / print by yourself"
       : planType == "Premium"
-      ? "Premium Plan"
+      ? "Our Standard Plan, "
       : "Tailored Plan";
 
   const cardFeatures =

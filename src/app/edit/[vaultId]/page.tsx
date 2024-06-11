@@ -1,5 +1,4 @@
 import VaultTemplate from "@/components/VaultTemplate";
-
 import React from "react";
 
 export default function page() {
