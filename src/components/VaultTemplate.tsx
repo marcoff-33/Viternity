@@ -14,6 +14,7 @@ import { Editor } from "@tiptap/react";
 import OtpInput from "./OtpInput";
 import path from "path";
 import QrCodeModal from "./QrCodeModal";
+import Link from "next/link";
 
 export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
@@ -62,8 +63,15 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
     <div className="py-20">
       {otpIsCorrect ? (
         <div className="flex justify-center flex-col w-full">
-          {isEditable && (
+          {isEditable ? (
             <FileUploader vaultId={vaultId} onUploadSuccess={handleNewImage} />
+          ) : (
+            <Link
+              href={`/edit/${vaultId}`}
+              className="self-end text-center items-center font-semibold sm:text-lg relative bg-accent-foreground text-primary max-w-fit sm:pr-10 "
+            >
+              Edit Vault
+            </Link>
           )}
           {vaultData?.imageUrls.length == 0 && isEditable && (
             <div className="flex justify-center items-center">

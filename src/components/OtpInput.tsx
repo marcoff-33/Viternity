@@ -26,7 +26,10 @@ export default function OtpInput({
   };
   const correctOtp = "123456";
   return (
-    <div className="">
+    <div className="flex flex-col justify-center items-center w-full h-full">
+      <div className="text-4xl text-white self-center py-5 font-bold">
+        Password Required to edit this Vault ...
+      </div>
       <InputOTP
         maxLength={6}
         onChange={(value) => setCurrentOtpValue(value)}

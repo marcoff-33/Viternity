@@ -27,7 +27,7 @@ export default function QrCodeModal() {
       <DialogContent>
         <DialogHeader>
           <img
-            src={`https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=https://localhost:3000/${vaultId}`}
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${`https://viternity.vercel.app/`}/${vaultId}`}
             className="p-2 border-b w-[350px] h-[350px] items-center self-center"
           />
           <DialogDescription className="p-2">
