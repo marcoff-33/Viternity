@@ -34,10 +34,30 @@ import { server_uploadHTML } from "@/app/utils/serverActions";
 const buttonStyles =
   "hover:bg-muted transition-all px-3 py-2 rounded-md duration-300 text-center items-center";
 
-const MenuBar = ({ editor }: { editor: Editor }) => {
+const MenuBar = ({
+  editor,
+  content,
+  vaultId,
+  allowSave,
+  setAllowSave,
+}: {
+  editor: Editor;
+  content: string;
+  vaultId: string;
+  allowSave: boolean;
+  setAllowSave: (value: boolean) => void;
+}) => {
   if (!editor) {
     return null;
   }
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleSave = async () => {
+    setIsProcessing(true);
+    await server_uploadHTML(content, vaultId);
+    setAllowSave(false);
+    setIsProcessing(false);
+  };
 
   return (
     <div className="flex bg-background flex-wrap p-1 gap-1">
@@ -194,6 +214,15 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
       >
         <MdOutlineFormatAlignRight />
       </button>
+      <button
+        onClick={handleSave}
+        disabled={!allowSave}
+        className={`${
+          !allowSave ? "bg-primary/20" : "bg-primary text-white"!
+        } rounded-full text-white px-5 transition-colors duration-200 w-[200px]`}
+      >
+        <p className="min-w-full">{isProcessing ? "Saving..." : "Save Text"}</p>
+      </button>
     </div>
   );
 };
@@ -227,12 +256,15 @@ const TextEditor = ({
 }) => {
   const [content, setContent] = useState(vaultText); // Initial HTML
 
+  const [allowSave, setAllowSave] = useState(false);
+
   const editor = useEditor({
     content: content,
     editable,
     extensions,
     onUpdate: ({ editor }) => {
       setContent(editor.getHTML());
+      if (!allowSave) setAllowSave(true);
     },
   });
 
@@ -245,7 +277,15 @@ const TextEditor = ({
 
   return (
     <div className="">
-      {editable && <MenuBar editor={editor!} />}
+      {editable && (
+        <MenuBar
+          content={content}
+          editor={editor!}
+          vaultId={vaultId}
+          allowSave={allowSave}
+          setAllowSave={setAllowSave}
+        />
+      )}
       <div
         className={`text-primary-foreground ${
           editable && "border-red-500 border-[2px] animate-pulse"
@@ -258,14 +298,6 @@ const TextEditor = ({
           aria-readonly={!editable}
         />
       </div>
-      {editable && (
-        <Button
-          onClick={() => server_uploadHTML(content, vaultId)}
-          className="sticky bottom-10 shadow-lg w-full my-10 z-50"
-        >
-          Save Text
-        </Button>
-      )}
     </div>
   );
 };

@@ -20,9 +20,9 @@ export default function QrCodeModal() {
     <Dialog>
       <DialogTrigger
         asChild
-        className="sticky shadow-lg bg-accent border-black border z-50"
+        className="sticky font-semibold text-primary z-50 cursor-pointer"
       >
-        <Button variant={"secondary"}>QR Code</Button>
+        <div>QR Code</div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

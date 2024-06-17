@@ -12,7 +12,7 @@ export default function FileUploader({
   onUploadSuccess,
 }: {
   vaultId: string;
-  onUploadSuccess: (newImageUrl: string) => void;
+  onUploadSuccess: (newImageUrl: string, action: "add" | "remove") => void;
 }) {
   const [file, setFile] = useState<FormData | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
@@ -42,7 +42,7 @@ export default function FileUploader({
       setUploading(true);
       const url = await server_uploadFile(file!, vaultId);
       setFileUrl(url);
-      onUploadSuccess(url);
+      onUploadSuccess(url, "add");
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -51,20 +51,18 @@ export default function FileUploader({
   };
 
   return (
-    <div className="self-end text-center items-center font-semibold sm:text-lg relative bg-accent-foreground text-primary max-w-fit sm:pr-10 ">
-      <Input
+    <div className="self-center flex justify-center text-center items-center font-semibold sm:text-lg relative bg-accent-foreground text-primary">
+      <input
         type="file"
-        className="text-transparent absolute flex justify-center items-center text-center"
+        className="cursor-pointer text-transparent file:hidden absolute flex justify-center items-center text-center max-w-full"
         onChange={(event) => {
           handleFileChange(event);
         }}
+        disabled={uploading}
       />
-      <p className="absolute inset-0 text-primary -z-50">
+      <div className="w-full text-center self-center items-center ">
         {uploading ? "Uploading..." : "Upload Photo"}
-      </p>
-      <button onClick={handleUpload} className="w-full text-center ">
-        {uploading ? "Uploading..." : "Upload Photo"}
-      </button>
+      </div>
     </div>
   );
 }

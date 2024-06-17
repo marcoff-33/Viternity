@@ -15,9 +15,11 @@ import {
   FieldValue,
   arrayUnion,
   deleteDoc,
+  arrayRemove,
 } from "firebase/firestore";
 import { Vault } from "../../components/UserVaults";
 import {
+  deleteObject,
   getDownloadURL,
   getStorage,
   ref,
@@ -238,4 +240,26 @@ export const server_deleteVault = async (vaultId: string) => {
   } catch (error) {
     return `Error deleting vault: ${error}`;
   }
+};
+
+export const server_deleteFile = async (fileUrl: string, vaultId: string) => {
+  try {
+    const storage = getStorage(firebase_app);
+    const storageRef = ref(storage, fileUrl);
+    await deleteObject(storageRef);
+    await server_removeLinkToVault(vaultId, fileUrl);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const server_removeLinkToVault = async (
+  vaultId: string,
+  downloadURL: string
+) => {
+  const db = getFirestore(firebase_app);
+  const vaultRef = doc(db, "vaults", vaultId);
+  await updateDoc(vaultRef, {
+    imageUrls: arrayRemove(downloadURL),
+  });
 };

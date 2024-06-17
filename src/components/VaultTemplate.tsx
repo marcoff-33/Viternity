@@ -49,22 +49,32 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   }, [vaultData]);
 
   // callback for the file uploader to updte the carousel images
-  const handleNewImage = (newImageUrl: string) => {
-    if (vaultData) {
-      setVaultData({
-        ...vaultData,
-        imageUrls: [...vaultData.imageUrls, newImageUrl],
-      });
-    }
+  const handleNewImage = (newImageUrl: string, action: "add" | "remove") => {
+    if (vaultData)
+      action === "add"
+        ? setVaultData({
+            ...vaultData,
+            imageUrls: [...vaultData.imageUrls, newImageUrl],
+          })
+        : setVaultData({
+            ...vaultData,
+            imageUrls: vaultData.imageUrls.filter((url) => url !== newImageUrl),
+          });
   };
 
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
   return (
     <div className="py-20">
       {otpIsCorrect ? (
-        <div className="flex justify-center flex-col w-full">
+        <div className="flex justify-center flex-col w-full relative">
           {isEditable ? (
-            <FileUploader vaultId={vaultId} onUploadSuccess={handleNewImage} />
+            <div className="container self-center flex justify-between pb-10">
+              <QrCodeModal />
+              <FileUploader
+                vaultId={vaultId}
+                onUploadSuccess={handleNewImage}
+              />
+            </div>
           ) : (
             <Link
               href={`/edit/${vaultId}`}
@@ -73,15 +83,13 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
               Edit Vault
             </Link>
           )}
-          {vaultData?.imageUrls.length == 0 && isEditable && (
-            <div className="flex justify-center items-center">
-              Start by uploading an image and adding some text. Max 10mb size
-              per image for free users.
-            </div>
-          )}
           {vaultData && (
             <div className="self-center">
-              <ImagesCarousel vaultImages={vaultData!.imageUrls} />
+              <ImagesCarousel
+                vaultImages={vaultData!.imageUrls}
+                vaultId={vaultId}
+                onImageDelete={handleNewImage}
+              />
             </div>
           )}
           <div className="py-10 flex flex-col justify-center items-center gap-5 w-full">
@@ -92,7 +100,6 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
                 vaultId={vaultId}
               />
             )}
-            {isEditable && otpIsCorrect && <QrCodeModal />}
           </div>
         </div>
       ) : (

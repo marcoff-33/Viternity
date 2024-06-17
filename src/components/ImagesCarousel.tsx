@@ -12,17 +12,32 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { usePathname } from "next/navigation";
-import { server_getVaultData } from "../app/utils/serverActions";
+import {
+  server_deleteFile,
+  server_getVaultData,
+} from "../app/utils/serverActions";
 import { useEffect, useState } from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { RxDotFilled } from "react-icons/rx";
 import { IoIosPhotos } from "react-icons/io";
 import { Vault } from "./UserVaults";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { FaTrashAlt } from "react-icons/fa";
+import { revalidatePath } from "next/cache";
+import { Router } from "next/router";
 
-export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
+export function ImagesCarousel({
+  vaultImages,
+  vaultId,
+  onImageDelete,
+}: {
+  vaultImages: string[];
+  vaultId: string;
+  onImageDelete: (imageUrl: string, action: "add" | "remove") => void;
+}) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
+  const [isProcessing, setIsProcessing] = React.useState(false);
 
   React.useEffect(() => {
     if (!api) {
@@ -36,18 +51,28 @@ export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
     });
   }, [vaultImages, api]);
 
+  const handleDelete = async (imageUrl: string) => {
+    setIsProcessing(true);
+    await server_deleteFile(imageUrl, vaultId);
+    setIsProcessing(false);
+    api?.scrollPrev();
+    setTimeout(() => {
+      onImageDelete(imageUrl, "remove");
+    }, 800);
+  };
+
   return (
     <Dialog>
       <DialogTrigger
-        className="max-h-fit self-center outline-none"
+        className="rounded-lg max-h-fit self-center outline-none"
         disabled={vaultImages.length == 0}
       >
         <div className="w-[300px] rounded-lg">
           <AspectRatio
             ratio={5 / 4}
-            className="border rounded-lg relative bg-primary/50"
+            className="relative outline-none rounded-lg "
           >
-            {vaultImages && (
+            {vaultImages && vaultImages.length > 0 ? (
               <>
                 <IoIosPhotos
                   className="absolute z-50 text-white top-2 right-2"
@@ -56,9 +81,11 @@ export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
                 <img
                   src={vaultImages![0]}
                   alt=""
-                  className="object-cover object-center absolute h-full w-full rounded-lg bg-muted-foreground"
+                  className="rounded-3xl object-cover object-center absolute h-full w-full bg-gradient-to-b from-zinc-800 to-zinc-900" //
                 />
               </>
+            ) : (
+              <div className="w-full h-full flex justify-center items-center rounded-3xl bg-gradient-to-b from-zinc-800 to-neutral-900"></div>
             )}
           </AspectRatio>
           <div className="flex flex-row justify-center">
@@ -82,13 +109,26 @@ export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
           <CarouselContent className="items-center">
             {vaultImages?.map((image, index) => (
               <CarouselItem key={index}>
-                <div className="flex justify-center items-center ">
+                <div className="flex justify-center items-center">
                   <CardContent className="min-h-[95vh] max-w-fit  items-center flex justify-center rounded-lg ">
-                    <img
-                      src={image}
-                      alt=""
-                      className="object-contain max-h-[85vh] aspect-auto rounded-lg"
-                    />
+                    <div className="relative">
+                      <img
+                        src={image}
+                        alt=""
+                        className={`${
+                          isProcessing
+                            ? "saturate-0 blur-sm"
+                            : "saturate-100 blur-none"
+                        } object-contain max-h-[85vh] aspect-auto rounded-lg relative transition-all duration-500`}
+                      />
+                      <div
+                        className="cursor-pointer absolute bottom-5 right-5 p-2 bg-accent-foreground/80 backdrop-blur-md text-destructive rounded-full"
+                        onClick={() => handleDelete(image)}
+                        key={index}
+                      >
+                        <FaTrashAlt />
+                      </div>
+                    </div>
                   </CardContent>
                 </div>
               </CarouselItem>
@@ -97,7 +137,6 @@ export function ImagesCarousel({ vaultImages }: { vaultImages: string[] }) {
           <CarouselPrevious className="w-[50px] h-[40px] hidden sm:inline-flex" />
           <CarouselNext className="w-[50px] h-[40px] hidden sm:inline-flex" />
         </Carousel>
-
         <div className="flex flex-row justify-center  absolute bottom-0 left-0 right-0">
           {vaultImages && vaultImages.length > 0 && (
             <div className="flex flex-row justify-center items-center">
