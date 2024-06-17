@@ -47,10 +47,10 @@ const MenuBar = ({
   allowSave: boolean;
   setAllowSave: (value: boolean) => void;
 }) => {
+  const [isProcessing, setIsProcessing] = useState(false);
   if (!editor) {
     return null;
   }
-  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleSave = async () => {
     setIsProcessing(true);
