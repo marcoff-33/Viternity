@@ -18,18 +18,13 @@ import { BiCodeBlock } from "react-icons/bi";
 import TextAlign from "@tiptap/extension-text-align";
 
 import ListItem from "@tiptap/extension-list-item";
-import TextStyle, { TextStyleOptions } from "@tiptap/extension-text-style";
-import {
-  Editor,
-  EditorContent,
-  EditorProvider,
-  useCurrentEditor,
-  useEditor,
-} from "@tiptap/react";
+import TextStyle from "@tiptap/extension-text-style";
+import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { server_uploadHTML } from "@/app/utils/serverActions";
+import { set } from "zod";
 
 const buttonStyles =
   "hover:bg-muted transition-all px-3 py-2 rounded-md duration-300 text-center items-center";
@@ -40,12 +35,16 @@ const MenuBar = ({
   vaultId,
   allowSave,
   setAllowSave,
+  setSuccessMessage,
+  handleAnimation,
 }: {
   editor: Editor;
   content: string;
   vaultId: string;
   allowSave: boolean;
   setAllowSave: (value: boolean) => void;
+  setSuccessMessage: (value: string) => void;
+  handleAnimation: () => void;
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   if (!editor) {
@@ -55,6 +54,8 @@ const MenuBar = ({
   const handleSave = async () => {
     setIsProcessing(true);
     await server_uploadHTML(content, vaultId);
+    setSuccessMessage("Text Saved");
+    handleAnimation();
     setAllowSave(false);
     setIsProcessing(false);
   };
@@ -249,10 +250,14 @@ const TextEditor = ({
   editable,
   vaultText,
   vaultId,
+  setSuccessMessage,
+  handleAnimation,
 }: {
   editable: boolean;
   vaultText: string;
   vaultId: string;
+  setSuccessMessage: (value: string) => void;
+  handleAnimation: () => void;
 }) => {
   const [content, setContent] = useState(vaultText); // Initial HTML
 
@@ -284,13 +289,11 @@ const TextEditor = ({
           vaultId={vaultId}
           allowSave={allowSave}
           setAllowSave={setAllowSave}
+          handleAnimation={handleAnimation}
+          setSuccessMessage={setSuccessMessage}
         />
       )}
-      <div
-        className={`text-primary-foreground ${
-          editable && "border-red-500 border-[2px] animate-pulse"
-        }`}
-      >
+      <div className={`text-primary-foreground ${editable && ""}`}>
         <EditorContent
           content={content}
           editor={editor}

@@ -146,6 +146,14 @@ export const server_uploadFile = async (
   try {
     const file = formData.get("file") as File;
 
+    if (!file.type.startsWith("image/")) {
+      throw new Error("Invalid file type. Please upload an image file.");
+    }
+
+    if (file.size > 1024 * 1024 * 10) {
+      throw new Error("File size exceeds 10MB limit.");
+    }
+
     // unique file name to avoid overwrites in db, temporary until better solution
     const timestamp = Date.now();
     const filename = `${file.name}-${timestamp}`;
@@ -160,7 +168,7 @@ export const server_uploadFile = async (
     return downloadURL; // Return the unique filename
   } catch (e) {
     console.log(`${e},`, userId);
-    return "Image Upload failed";
+    throw e;
   }
 };
 
@@ -211,7 +219,7 @@ export const server_uploadHTML = async (text: string, vaultId: string) => {
     return filename; // Return the unique filename
   } catch (e) {
     console.log(`${e},`, userId);
-    return "Image Upload failed";
+    return e;
   }
 };
 

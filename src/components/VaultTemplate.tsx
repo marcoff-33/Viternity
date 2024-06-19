@@ -15,6 +15,7 @@ import OtpInput from "./OtpInput";
 import path from "path";
 import QrCodeModal from "./QrCodeModal";
 import Link from "next/link";
+import { set } from "zod";
 
 export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
@@ -24,6 +25,25 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [otpIsCorrect, setOtpIsCorrect] = useState<boolean>(
     pathName.includes("edit") ? false : true
   );
+  const [error, setError] = useState<null | string>(null);
+  const [successMessage, setSuccessMessage] = useState<null | string>(null);
+  const [showText, setShowText] = useState<boolean>(false);
+
+  const handleMessageAnimation = () => {
+    setShowText(true);
+
+    setTimeout(() => {
+      setShowText(false);
+    }, 4000);
+    setTimeout(() => {
+      setError(null);
+      setSuccessMessage(null);
+    }, 5000);
+  };
+
+  useEffect(() => {
+    handleMessageAnimation();
+  }, [error]);
 
   const handleFirstLoad = async () => {
     const data = await server_getVaultData(vaultId);
@@ -50,16 +70,21 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
 
   // callback for the file uploader to updte the carousel images
   const handleNewImage = (newImageUrl: string, action: "add" | "remove") => {
+    setError(null);
     if (vaultData)
       action === "add"
-        ? setVaultData({
+        ? (setVaultData({
             ...vaultData,
             imageUrls: [...vaultData.imageUrls, newImageUrl],
-          })
-        : setVaultData({
+          }),
+          setSuccessMessage("New image added"),
+          handleMessageAnimation())
+        : (setVaultData({
             ...vaultData,
             imageUrls: vaultData.imageUrls.filter((url) => url !== newImageUrl),
-          });
+          }),
+          setSuccessMessage("Image removed successfully"),
+          handleMessageAnimation());
   };
 
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
@@ -70,9 +95,22 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
           {isEditable ? (
             <div className="container self-center flex justify-between pb-10">
               <QrCodeModal />
+              <div
+                className={`grow text-center items-center transition-colors duration-400 delay-100 z-[5000] px-2  rounded-full backdrop-blur-sm  max-w-fit ${
+                  showText
+                    ? `bg-accent-foreground/50 ${error ? "text-red-500" : ""} ${
+                        successMessage ? "text-green-500" : ""
+                      }`
+                    : "text-transparent bg-transparent"
+                }
+                `}
+              >
+                {error || successMessage}
+              </div>
               <FileUploader
                 vaultId={vaultId}
                 onUploadSuccess={handleNewImage}
+                setError={setError}
               />
             </div>
           ) : (
@@ -89,6 +127,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
                 vaultImages={vaultData!.imageUrls}
                 vaultId={vaultId}
                 onImageDelete={handleNewImage}
+                isEditable={isEditable}
               />
             </div>
           )}
@@ -98,6 +137,8 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
                 editable={isEditable}
                 vaultText={vaultText}
                 vaultId={vaultId}
+                handleAnimation={handleMessageAnimation}
+                setSuccessMessage={setSuccessMessage}
               />
             )}
           </div>

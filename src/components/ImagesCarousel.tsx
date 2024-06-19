@@ -30,10 +30,12 @@ export function ImagesCarousel({
   vaultImages,
   vaultId,
   onImageDelete,
+  isEditable,
 }: {
   vaultImages: string[];
   vaultId: string;
   onImageDelete: (imageUrl: string, action: "add" | "remove") => void;
+  isEditable: boolean;
 }) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
@@ -121,13 +123,15 @@ export function ImagesCarousel({
                             : "saturate-100 blur-none"
                         } object-contain max-h-[85vh] aspect-auto rounded-lg relative transition-all duration-500`}
                       />
-                      <div
-                        className="cursor-pointer absolute bottom-5 right-5 p-2 bg-accent-foreground/80 backdrop-blur-md text-destructive rounded-full"
-                        onClick={() => handleDelete(image)}
-                        key={index}
-                      >
-                        <FaTrashAlt />
-                      </div>
+                      {isEditable && (
+                        <div
+                          className="cursor-pointer absolute bottom-5 right-5 p-2 bg-accent-foreground/80 backdrop-blur-md text-destructive rounded-full"
+                          onClick={() => handleDelete(image)}
+                          key={index}
+                        >
+                          <FaTrashAlt />
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </div>

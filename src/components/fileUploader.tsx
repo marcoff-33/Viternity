@@ -10,13 +10,15 @@ import { revalidatePath } from "next/cache";
 export default function FileUploader({
   vaultId,
   onUploadSuccess,
+  setError,
 }: {
   vaultId: string;
   onUploadSuccess: (newImageUrl: string, action: "add" | "remove") => void;
+  setError: (error: null | string) => void;
 }) {
   const [file, setFile] = useState<FormData | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-  const [error, setError] = useState<null | string>(null);
+
   const [uploading, setUploading] = useState(false);
   const pathName = usePathname();
 
@@ -34,15 +36,19 @@ export default function FileUploader({
       setFile(formData);
     }
   };
+
   const handleUpload = async () => {
     if (!file) console.log("nofile");
     setUploading(true);
 
     try {
-      setUploading(true);
       const url = await server_uploadFile(file!, vaultId);
-      setFileUrl(url);
-      onUploadSuccess(url, "add");
+      if (url) {
+        setFileUrl(url);
+        onUploadSuccess(url, "add");
+      } else {
+        throw new Error("Upload failed");
+      }
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -60,6 +66,7 @@ export default function FileUploader({
         }}
         disabled={uploading}
       />
+
       <div className="w-full text-center self-center items-center ">
         {uploading ? "Uploading..." : "Upload Photo"}
       </div>
