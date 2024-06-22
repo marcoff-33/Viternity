@@ -63,7 +63,7 @@ export default function FileUploader({
     <div className="self-center flex justify-center text-center items-center font-semibold sm:text-lg relative bg-accent-foreground text-primary">
       <input
         type="file"
-        className="cursor-pointer text-transparent file:hidden absolute flex justify-center items-center text-center max-w-full"
+        className="z-50 cursor-pointer text-transparent file:hidden absolute flex justify-center items-center text-center max-w-full"
         onChange={(event) => {
           handleFileChange(event);
         }}
