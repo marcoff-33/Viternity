@@ -132,8 +132,21 @@ export const server_getVaultData = async (vaultId: string) => {
   const vaultRef = doc(db, "vaults", vaultId);
 
   const vaultSnap = await getDoc(vaultRef);
+  const data = vaultSnap.data() as Vault;
 
-  return vaultSnap.data() as Vault;
+  const imageUrls = await Promise.all(
+    data.imageUrls.map(async (url) => {
+      const formattedUrl = await server_formatImageUrl(
+        url,
+        "from storage to cdn"
+      );
+      return formattedUrl;
+    })
+  );
+
+  data.imageUrls = imageUrls;
+
+  return data;
 };
 
 export const server_uploadFile = async (
@@ -270,4 +283,21 @@ const server_removeLinkToVault = async (
   await updateDoc(vaultRef, {
     imageUrls: arrayRemove(downloadURL),
   });
+};
+
+export const server_formatImageUrl = async (
+  downloadURL: string,
+  from: "from storage to cdn" | "from cdn to storage"
+) => {
+  const fromBaseUrl =
+    from === "from storage to cdn"
+      ? "https://firebasestorage.googleapis.com"
+      : "https://ik.imagekit.io/viternity";
+  const toBaseUrl =
+    from === "from storage to cdn"
+      ? "https://ik.imagekit.io/viternity"
+      : "https://firebasestorage.googleapis.com";
+
+  const formattedUrl = downloadURL.replace(fromBaseUrl, toBaseUrl);
+  return formattedUrl;
 };

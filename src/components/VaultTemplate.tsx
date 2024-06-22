@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import React, { use, useEffect, useState } from "react";
 import { Vault } from "./UserVaults";
 import {
+  server_formatImageUrl,
   server_getVaultData,
   server_getVaultTextContent,
 } from "@/app/utils/serverActions";
@@ -69,19 +70,26 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   }, [vaultData]);
 
   // callback for the file uploader to updte the carousel images
-  const handleNewImage = (newImageUrl: string, action: "add" | "remove") => {
+  const handleNewImage = async (
+    newImageUrl: string,
+    action: "add" | "remove"
+  ) => {
     setError(null);
+    const cdnImageUrl = await server_formatImageUrl(
+      newImageUrl,
+      "from storage to cdn"
+    );
     if (vaultData)
       action === "add"
         ? (setVaultData({
             ...vaultData,
-            imageUrls: [...vaultData.imageUrls, newImageUrl],
+            imageUrls: [...vaultData.imageUrls, cdnImageUrl],
           }),
           setSuccessMessage("New image added"),
           handleMessageAnimation())
         : (setVaultData({
             ...vaultData,
-            imageUrls: vaultData.imageUrls.filter((url) => url !== newImageUrl),
+            imageUrls: vaultData.imageUrls.filter((url) => url !== cdnImageUrl),
           }),
           setSuccessMessage("Image removed successfully"),
           handleMessageAnimation());

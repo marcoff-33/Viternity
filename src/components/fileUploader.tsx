@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { server_uploadFile } from "../app/utils/serverActions";
+import {
+  server_formatImageUrl,
+  server_uploadFile,
+} from "../app/utils/serverActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePathname } from "next/navigation";

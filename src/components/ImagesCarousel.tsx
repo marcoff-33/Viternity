@@ -14,6 +14,7 @@ import {
 import { usePathname } from "next/navigation";
 import {
   server_deleteFile,
+  server_formatImageUrl,
   server_getVaultData,
 } from "../app/utils/serverActions";
 import { useEffect, useState } from "react";
@@ -25,6 +26,7 @@ import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { FaTrashAlt } from "react-icons/fa";
 import { revalidatePath } from "next/cache";
 import { Router } from "next/router";
+import Images from "./Image";
 
 export function ImagesCarousel({
   vaultImages,
@@ -54,8 +56,9 @@ export function ImagesCarousel({
   }, [vaultImages, api]);
 
   const handleDelete = async (imageUrl: string) => {
+    const dbUrl = await server_formatImageUrl(imageUrl, "from cdn to storage");
     setIsProcessing(true);
-    await server_deleteFile(imageUrl, vaultId);
+    await server_deleteFile(dbUrl, vaultId);
     setIsProcessing(false);
     api?.scrollPrev();
     setTimeout(() => {
@@ -114,15 +117,7 @@ export function ImagesCarousel({
                 <div className="flex justify-center items-center">
                   <CardContent className="min-h-[95vh] max-w-fit  items-center flex justify-center rounded-lg ">
                     <div className="relative">
-                      <img
-                        src={image}
-                        alt=""
-                        className={`${
-                          isProcessing
-                            ? "saturate-0 blur-sm"
-                            : "saturate-100 blur-none"
-                        } object-contain max-h-[85vh] aspect-auto rounded-lg relative transition-all duration-500`}
-                      />
+                      <Images cdnUrl={image} isProcessing={isProcessing} />
                       {isEditable && (
                         <div
                           className="cursor-pointer absolute bottom-5 right-5 p-2 bg-accent-foreground/80 backdrop-blur-md text-destructive rounded-full"
