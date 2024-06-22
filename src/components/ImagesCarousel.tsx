@@ -115,12 +115,12 @@ export function ImagesCarousel({
             {vaultImages?.map((image, index) => (
               <CarouselItem key={index}>
                 <div className="flex justify-center items-center">
-                  <CardContent className="min-h-[95vh] max-w-fit  items-center flex justify-center rounded-lg ">
+                  <CardContent className="min-h-[95vh] w-full  items-center flex justify-center rounded-lg ">
                     <div className="relative">
                       <Images cdnUrl={image} isProcessing={isProcessing} />
                       {isEditable && (
                         <div
-                          className="cursor-pointer absolute bottom-5 right-5 p-2 bg-accent-foreground/80 backdrop-blur-md text-destructive rounded-full"
+                          className="cursor-pointer absolute bottom-5 right-5 py-4 px-8 bg-accent-foreground/80 backdrop-blur-md text-destructive rounded-full"
                           onClick={() => handleDelete(image)}
                           key={index}
                         >

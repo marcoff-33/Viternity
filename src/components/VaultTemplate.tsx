@@ -104,7 +104,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
             <div className="container self-center flex justify-between pb-10">
               <QrCodeModal />
               <div
-                className={`grow text-center items-center transition-colors duration-400 delay-100 z-[5000] px-2  rounded-full backdrop-blur-sm  max-w-fit ${
+                className={`grow text-center items-center transition-colors duration-400 delay-100 -z-50 px-2  rounded-full backdrop-blur-sm  max-w-fit ${
                   showText
                     ? `bg-accent-foreground/50 ${error ? "text-red-500" : ""} ${
                         successMessage ? "text-green-500" : ""
