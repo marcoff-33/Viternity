@@ -30,7 +30,7 @@ export default function Images({
         src={`${cdnUrl}&tr=q-10`}
         alt=""
         srcSet={` ${cdnUrl}&tr=w-400 400w, ${cdnUrl}&tr=w-1000 1000w,`}
-        sizes="(min-width: 760px) 400px, 1000px"
+        sizes="(max-width: 760px) 400px, 1000px"
         className={`${
           isProcessing ? "saturate-0 blur-sm" : "saturate-100 blur-none"
         } object-contain max-h-[85vh] aspect-auto rounded-lg relative transition-all duration-500 w-full`}

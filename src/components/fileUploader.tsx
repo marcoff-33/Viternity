@@ -9,15 +9,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePathname } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { AiOutlinePicture } from "react-icons/ai";
+import { toast } from "./ui/use-toast";
+import { calculateMegapixels } from "@/app/utils/checkMpCount";
 
 export default function FileUploader({
   vaultId,
   onUploadSuccess,
-  setError,
 }: {
   vaultId: string;
   onUploadSuccess: (newImageUrl: string, action: "add" | "remove") => void;
-  setError: (error: null | string) => void;
 }) {
   const [file, setFile] = useState<FormData | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
@@ -31,9 +32,22 @@ export default function FileUploader({
     }
   }, [file]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
+
     if (file) {
+      const megapixels = await calculateMegapixels(file);
+      if (megapixels > 20) {
+        toast({
+          title: "Error",
+          description: `Image size exceeds megapixel limit (20MP)`,
+          variant: "destructive",
+          duration: 10000,
+        });
+        return;
+      }
       const formData = new FormData();
       formData.append("file", file);
       setFile(formData);
@@ -53,14 +67,19 @@ export default function FileUploader({
         throw new Error("Upload failed");
       }
     } catch (error: any) {
-      setError(error.message);
+      console.log(error);
+      toast({
+        title: "Error",
+        description: `${error}`,
+        variant: "destructive",
+      });
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <div className="self-center flex justify-center text-center items-center font-semibold sm:text-lg relative bg-accent-foreground text-primary">
+    <div className="self-center flex justify-center text-center items-center font-semibold sm:text-lg relative  text-primary">
       <Input
         type="file"
         id="file"
@@ -73,7 +92,7 @@ export default function FileUploader({
       />
 
       <div className="w-full text-center self-center items-center ">
-        {uploading ? "Uploading..." : "Upload Photo"}
+        {uploading ? "Uploadin..." : "Upload Photo"}
       </div>
     </div>
   );

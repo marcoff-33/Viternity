@@ -9,7 +9,7 @@ import { IoIosArrowDropdown } from "react-icons/io";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen bg-foreground flex-col relative">
+    <div className="flex min-h-screen bg-background flex-col relative">
       <Vortex
         className="min-h-screen w-full z-50 "
         backgroundColor="transparent"

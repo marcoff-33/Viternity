@@ -27,7 +27,7 @@ import { server_uploadHTML } from "@/app/utils/serverActions";
 import { set } from "zod";
 
 const buttonStyles =
-  "hover:bg-muted transition-all px-3 py-2 rounded-md duration-300 text-center items-center";
+  "hover:bg-muted/80 border transition-all px-3 py-2 rounded-md duration-300 text-center items-center";
 
 const MenuBar = ({
   editor,
@@ -35,16 +35,12 @@ const MenuBar = ({
   vaultId,
   allowSave,
   setAllowSave,
-  setSuccessMessage,
-  handleAnimation,
 }: {
   editor: Editor;
   content: string;
   vaultId: string;
   allowSave: boolean;
   setAllowSave: (value: boolean) => void;
-  setSuccessMessage: (value: string) => void;
-  handleAnimation: () => void;
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   if (!editor) {
@@ -54,21 +50,19 @@ const MenuBar = ({
   const handleSave = async () => {
     setIsProcessing(true);
     await server_uploadHTML(content, vaultId);
-    setSuccessMessage("Text Saved");
-    handleAnimation();
     setAllowSave(false);
     setIsProcessing(false);
   };
 
   return (
-    <div className="flex bg-background flex-wrap p-1 gap-1">
+    <div className="flex flex-wrap p-1 gap-5 pb-5">
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
         className={`${buttonStyles} ${
           editor.isActive("bold")
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <MdFormatBold />
@@ -78,8 +72,8 @@ const MenuBar = ({
         disabled={!editor.can().chain().focus().toggleItalic().run()}
         className={`${buttonStyles} ${
           editor.isActive("italic")
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <MdFormatItalic />
@@ -89,35 +83,19 @@ const MenuBar = ({
         disabled={!editor.can().chain().focus().toggleStrike().run()}
         className={`${buttonStyles} ${
           editor.isActive("strike")
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <MdOutlineStrikethroughS />
       </button>
-      <button
-        onClick={() => editor.chain().focus().toggleCode().run()}
-        disabled={!editor.can().chain().focus().toggleCode().run()}
-        className={`${buttonStyles} ${
-          editor.isActive("code")
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
-        }`}
-      >
-        <MdOutlineCode />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().unsetAllMarks().run()}
-        className={buttonStyles}
-      >
-        <MdOutlineClearAll />
-      </button>
+
       <button
         onClick={() => editor.chain().focus().setParagraph().run()}
         className={`${buttonStyles} ${
           editor.isActive("paragraph")
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <PiParagraphLight />
@@ -126,8 +104,8 @@ const MenuBar = ({
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         className={`${buttonStyles} ${
           editor.isActive("heading", { level: 1 })
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <LuHeading1 size={25} />
@@ -136,8 +114,8 @@ const MenuBar = ({
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         className={`${buttonStyles} ${
           editor.isActive("heading", { level: 2 })
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <LuHeading2 size={20} />
@@ -146,8 +124,8 @@ const MenuBar = ({
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         className={`${buttonStyles} ${
           editor.isActive("heading", { level: 3 })
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <LuHeading3 size={18} />
@@ -156,8 +134,8 @@ const MenuBar = ({
         onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
         className={`${buttonStyles} ${
           editor.isActive("heading", { level: 4 })
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <LuHeading4 size={17} />
@@ -166,29 +144,19 @@ const MenuBar = ({
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={`${buttonStyles} ${
           editor.isActive("bulletList")
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <MdFormatListBulleted />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        className={`${buttonStyles} ${
-          editor.isActive("codeBlock")
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
-        }`}
-      >
-        <BiCodeBlock />
       </button>
       <button
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
         className={`${buttonStyles} ${
           editor.isActive("paragraph", { textAlign: "left" }) ||
           editor.isActive("heading", { textAlign: "left" })
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <MdOutlineFormatAlignLeft />
@@ -198,8 +166,8 @@ const MenuBar = ({
         className={`${buttonStyles} ${
           editor.isActive("paragraph", { textAlign: "center" }) ||
           editor.isActive("heading", { textAlign: "center" })
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <MdOutlineFormatAlignCenter />
@@ -209,8 +177,8 @@ const MenuBar = ({
         className={`${buttonStyles} ${
           editor.isActive("paragraph", { textAlign: "right" }) ||
           editor.isActive("heading", { textAlign: "right" })
-            ? "is-active bg-muted"
-            : "hover:text-accent-foreground/20"
+            ? "is-active bg-card border-border text-card-foreground"
+            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
         }`}
       >
         <MdOutlineFormatAlignRight />
@@ -219,8 +187,10 @@ const MenuBar = ({
         onClick={handleSave}
         disabled={!allowSave}
         className={`${
-          !allowSave ? "bg-primary/20" : "bg-primary text-white"!
-        } rounded-full text-white px-5 transition-colors duration-200 w-[200px]`}
+          !allowSave
+            ? "bg-muted/50 text-muted"
+            : "bg-primary text-primary-foreground"!
+        } rounded-full font-bold px-5 transition-colors duration-200 w-[200px]`}
       >
         <p className="min-w-full">{isProcessing ? "Saving..." : "Save Text"}</p>
       </button>
@@ -250,14 +220,10 @@ const TextEditor = ({
   editable,
   vaultText,
   vaultId,
-  setSuccessMessage,
-  handleAnimation,
 }: {
   editable: boolean;
   vaultText: string;
   vaultId: string;
-  setSuccessMessage: (value: string) => void;
-  handleAnimation: () => void;
 }) => {
   const [content, setContent] = useState(vaultText); // Initial HTML
 
@@ -281,7 +247,7 @@ const TextEditor = ({
   }, [vaultText, editor]);
 
   return (
-    <div className="">
+    <div className="text-foreground">
       {editable && (
         <MenuBar
           content={content}
@@ -289,16 +255,19 @@ const TextEditor = ({
           vaultId={vaultId}
           allowSave={allowSave}
           setAllowSave={setAllowSave}
-          handleAnimation={handleAnimation}
-          setSuccessMessage={setSuccessMessage}
         />
       )}
-      <div className={`text-primary-foreground ${editable && ""}`}>
+      <div
+        className={`text-foreground outline-none bg-card border border-border rounded-lg p-5 ${
+          editable && ""
+        }`}
+      >
         <EditorContent
           content={content}
           editor={editor}
           readOnly={!editable}
           aria-readonly={!editable}
+          className=""
         />
       </div>
     </div>

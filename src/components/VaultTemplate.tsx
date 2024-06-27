@@ -17,6 +17,8 @@ import path from "path";
 import QrCodeModal from "./QrCodeModal";
 import Link from "next/link";
 import { set } from "zod";
+import { useToast } from "./ui/use-toast";
+import { Toaster } from "./ui/toaster";
 
 export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
@@ -26,25 +28,8 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [otpIsCorrect, setOtpIsCorrect] = useState<boolean>(
     pathName.includes("edit") ? false : true
   );
-  const [error, setError] = useState<null | string>(null);
-  const [successMessage, setSuccessMessage] = useState<null | string>(null);
-  const [showText, setShowText] = useState<boolean>(false);
 
-  const handleMessageAnimation = () => {
-    setShowText(true);
-
-    setTimeout(() => {
-      setShowText(false);
-    }, 4000);
-    setTimeout(() => {
-      setError(null);
-      setSuccessMessage(null);
-    }, 5000);
-  };
-
-  useEffect(() => {
-    handleMessageAnimation();
-  }, [error]);
+  const { toast } = useToast();
 
   const handleFirstLoad = async () => {
     const data = await server_getVaultData(vaultId);
@@ -74,25 +59,34 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
     newImageUrl: string,
     action: "add" | "remove"
   ) => {
-    setError(null);
     const cdnImageUrl = await server_formatImageUrl(
       newImageUrl,
       "from storage to cdn"
     );
     if (vaultData)
-      action === "add"
-        ? (setVaultData({
-            ...vaultData,
-            imageUrls: [...vaultData.imageUrls, cdnImageUrl],
-          }),
-          setSuccessMessage("New image added"),
-          handleMessageAnimation())
-        : (setVaultData({
-            ...vaultData,
-            imageUrls: vaultData.imageUrls.filter((url) => url !== cdnImageUrl),
-          }),
-          setSuccessMessage("Image removed successfully"),
-          handleMessageAnimation());
+      try {
+        action === "add"
+          ? (setVaultData({
+              ...vaultData,
+              imageUrls: [...vaultData.imageUrls, cdnImageUrl],
+            }),
+            toast({
+              title: "Success",
+              description: "Your new Images has been added",
+            }))
+          : (setVaultData({
+              ...vaultData,
+              imageUrls: vaultData.imageUrls.filter(
+                (url) => url !== cdnImageUrl
+              ),
+            }),
+            toast({
+              title: "Success",
+              description: "Your image has been removed",
+            }));
+      } catch (error) {
+        toast({ title: "Error", description: `${error}` });
+      }
   };
 
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
@@ -103,22 +97,9 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
           {isEditable ? (
             <div className="container self-center flex justify-between pb-10">
               <QrCodeModal />
-              <div
-                className={`grow text-center items-center transition-colors duration-400 delay-100 -z-50 px-2  rounded-full backdrop-blur-sm  max-w-fit ${
-                  showText
-                    ? `bg-accent-foreground/50 ${error ? "text-red-500" : ""} ${
-                        successMessage ? "text-green-500" : ""
-                      }`
-                    : "text-transparent bg-transparent"
-                }
-                `}
-              >
-                {error || successMessage}
-              </div>
               <FileUploader
                 vaultId={vaultId}
                 onUploadSuccess={handleNewImage}
-                setError={setError}
               />
             </div>
           ) : (
@@ -145,8 +126,6 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
                 editable={isEditable}
                 vaultText={vaultText}
                 vaultId={vaultId}
-                handleAnimation={handleMessageAnimation}
-                setSuccessMessage={setSuccessMessage}
               />
             )}
           </div>
