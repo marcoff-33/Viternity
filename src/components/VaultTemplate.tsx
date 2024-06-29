@@ -120,7 +120,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
               />
             </div>
           )}
-          <div className="py-10 flex flex-col justify-center items-center gap-5 w-full">
+          <div className="relative py-10 flex flex-col justify-center items-center gap-5 w-full">
             {loadEditor && vaultText && (
               <TextEditor
                 editable={isEditable}

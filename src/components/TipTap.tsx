@@ -25,6 +25,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { server_uploadHTML } from "@/app/utils/serverActions";
 import { set } from "zod";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 const buttonStyles =
   "hover:bg-muted/80 border transition-all px-3 py-2 rounded-md duration-300 text-center items-center";
@@ -55,145 +56,166 @@ const MenuBar = ({
   };
 
   return (
-    <div className="flex flex-wrap p-1 gap-5 pb-5">
-      <button
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        disabled={!editor.can().chain().focus().toggleBold().run()}
-        className={`${buttonStyles} ${
-          editor.isActive("bold")
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <MdFormatBold />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        disabled={!editor.can().chain().focus().toggleItalic().run()}
-        className={`${buttonStyles} ${
-          editor.isActive("italic")
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <MdFormatItalic />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        disabled={!editor.can().chain().focus().toggleStrike().run()}
-        className={`${buttonStyles} ${
-          editor.isActive("strike")
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <MdOutlineStrikethroughS />
-      </button>
+    <div className="flex justify-center fixed top-10 inset-x-0 z-[1000]">
+      <div className="flex flex-row justify-center p-1 gap-5 ring-1 ring-ring rounded-lg bg-card">
+        <button
+          onClick={handleSave}
+          disabled={!allowSave}
+          className={`${
+            !allowSave
+              ? "bg-muted/50 text-muted"
+              : "bg-primary text-primary-foreground"!
+          } rounded-full font-bold px-5 transition-colors duration-200 w-[200px]`}
+        >
+          <p className="min-w-full">
+            {isProcessing ? "Saving..." : "Save Text"}
+          </p>
+        </button>
+        <Popover>
+          <PopoverTrigger className="text-primary text-lg font-bold px-5 text-center items-center flex justify-center ">
+            ...
+          </PopoverTrigger>
+          <PopoverContent>
+            <button
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              disabled={!editor.can().chain().focus().toggleBold().run()}
+              className={`${buttonStyles} ${
+                editor.isActive("bold")
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <MdFormatBold />
+            </button>
+            <button
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              disabled={!editor.can().chain().focus().toggleItalic().run()}
+              className={`${buttonStyles} ${
+                editor.isActive("italic")
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <MdFormatItalic />
+            </button>
+            <button
+              onClick={() => editor.chain().focus().toggleStrike().run()}
+              disabled={!editor.can().chain().focus().toggleStrike().run()}
+              className={`${buttonStyles} ${
+                editor.isActive("strike")
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <MdOutlineStrikethroughS />
+            </button>
 
-      <button
-        onClick={() => editor.chain().focus().setParagraph().run()}
-        className={`${buttonStyles} ${
-          editor.isActive("paragraph")
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <PiParagraphLight />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={`${buttonStyles} ${
-          editor.isActive("heading", { level: 1 })
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <LuHeading1 size={25} />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={`${buttonStyles} ${
-          editor.isActive("heading", { level: 2 })
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <LuHeading2 size={20} />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        className={`${buttonStyles} ${
-          editor.isActive("heading", { level: 3 })
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <LuHeading3 size={18} />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-        className={`${buttonStyles} ${
-          editor.isActive("heading", { level: 4 })
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <LuHeading4 size={17} />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={`${buttonStyles} ${
-          editor.isActive("bulletList")
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <MdFormatListBulleted />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign("left").run()}
-        className={`${buttonStyles} ${
-          editor.isActive("paragraph", { textAlign: "left" }) ||
-          editor.isActive("heading", { textAlign: "left" })
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <MdOutlineFormatAlignLeft />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign("center").run()}
-        className={`${buttonStyles} ${
-          editor.isActive("paragraph", { textAlign: "center" }) ||
-          editor.isActive("heading", { textAlign: "center" })
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <MdOutlineFormatAlignCenter />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign("right").run()}
-        className={`${buttonStyles} ${
-          editor.isActive("paragraph", { textAlign: "right" }) ||
-          editor.isActive("heading", { textAlign: "right" })
-            ? "is-active bg-card border-border text-card-foreground"
-            : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
-        }`}
-      >
-        <MdOutlineFormatAlignRight />
-      </button>
-      <button
-        onClick={handleSave}
-        disabled={!allowSave}
-        className={`${
-          !allowSave
-            ? "bg-muted/50 text-muted"
-            : "bg-primary text-primary-foreground"!
-        } rounded-full font-bold px-5 transition-colors duration-200 w-[200px]`}
-      >
-        <p className="min-w-full">{isProcessing ? "Saving..." : "Save Text"}</p>
-      </button>
+            <button
+              onClick={() => editor.chain().focus().setParagraph().run()}
+              className={`${buttonStyles} ${
+                editor.isActive("paragraph")
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <PiParagraphLight />
+            </button>
+            <button
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 1 }).run()
+              }
+              className={`${buttonStyles} ${
+                editor.isActive("heading", { level: 1 })
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <LuHeading1 size={25} />
+            </button>
+            <button
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 2 }).run()
+              }
+              className={`${buttonStyles} ${
+                editor.isActive("heading", { level: 2 })
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <LuHeading2 size={20} />
+            </button>
+            <button
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 3 }).run()
+              }
+              className={`${buttonStyles} ${
+                editor.isActive("heading", { level: 3 })
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <LuHeading3 size={18} />
+            </button>
+            <button
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 4 }).run()
+              }
+              className={`${buttonStyles} ${
+                editor.isActive("heading", { level: 4 })
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <LuHeading4 size={17} />
+            </button>
+            <button
+              onClick={() => editor.chain().focus().toggleBulletList().run()}
+              className={`${buttonStyles} ${
+                editor.isActive("bulletList")
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <MdFormatListBulleted />
+            </button>
+            <button
+              onClick={() => editor.chain().focus().setTextAlign("left").run()}
+              className={`${buttonStyles} ${
+                editor.isActive("paragraph", { textAlign: "left" }) ||
+                editor.isActive("heading", { textAlign: "left" })
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <MdOutlineFormatAlignLeft />
+            </button>
+            <button
+              onClick={() =>
+                editor.chain().focus().setTextAlign("center").run()
+              }
+              className={`${buttonStyles} ${
+                editor.isActive("paragraph", { textAlign: "center" }) ||
+                editor.isActive("heading", { textAlign: "center" })
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <MdOutlineFormatAlignCenter />
+            </button>
+            <button
+              onClick={() => editor.chain().focus().setTextAlign("right").run()}
+              className={`${buttonStyles} ${
+                editor.isActive("paragraph", { textAlign: "right" }) ||
+                editor.isActive("heading", { textAlign: "right" })
+                  ? "is-active bg-card border-border text-card-foreground"
+                  : "hover:text-accent-foreground/20 text-card-foreground border-transparent"
+              }`}
+            >
+              <MdOutlineFormatAlignRight />
+            </button>
+          </PopoverContent>
+        </Popover>
+      </div>
     </div>
   );
 };
@@ -247,7 +269,7 @@ const TextEditor = ({
   }, [vaultText, editor]);
 
   return (
-    <div className="text-foreground">
+    <div className="text-foreground relative">
       {editable && (
         <MenuBar
           content={content}

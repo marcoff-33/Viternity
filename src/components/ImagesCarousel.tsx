@@ -109,13 +109,13 @@ export function ImagesCarousel({
           </div>
         </div>
       </DialogTrigger>
-      <DialogContent className="min-w-[95vw] max-h-[95vh] max-w-4xl border-none flex justify-center flex-col shadow-none bg-transparent backdrop-blur-md">
-        <Carousel className=" max-w-[80vw] self-center" setApi={setApi}>
-          <CarouselContent className="items-center">
+      <DialogContent className=" z-[5000] min-w-[95vw] max-h-[95vh] max-w-4xl border-none flex justify-center flex-col shadow-none">
+        <Carousel className="max-w-[80vw] self-center" setApi={setApi}>
+          <CarouselContent className="">
             {vaultImages?.map((image, index) => (
               <CarouselItem key={index}>
                 <div className="flex justify-center items-center">
-                  <CardContent className="min-h-[95vh] w-full  items-center flex justify-center rounded-lg ">
+                  <CardContent className=" min-h-[95vh] w-full  items-center flex justify-center rounded-lg ">
                     <div className="relative">
                       <Images cdnUrl={image} isProcessing={isProcessing} />
                       {isEditable && (
