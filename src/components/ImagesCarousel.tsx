@@ -109,7 +109,10 @@ export function ImagesCarousel({
           </div>
         </div>
       </DialogTrigger>
-      <DialogContent className=" z-[5000] min-w-[95vw] max-h-[95vh] max-w-4xl border-none flex justify-center flex-col shadow-none">
+      <DialogContent
+        closeButton={true}
+        className=" z-[5000] min-w-[95vw] max-h-[95vh] max-w-4xl border-none flex justify-center flex-col shadow-none"
+      >
         <Carousel className="max-w-[80vw] self-center" setApi={setApi}>
           <CarouselContent className="">
             {vaultImages?.map((image, index) => (

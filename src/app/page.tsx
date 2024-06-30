@@ -11,12 +11,12 @@ export default function Home() {
   return (
     <div className="flex min-h-screen bg-background flex-col relative">
       <Vortex
-        className="min-h-screen w-full z-50 "
+        className="min-h-screen w-full z-50 border-b border-border"
         backgroundColor="transparent"
         baseHue={-100}
-        particleCount={22}
+        particleCount={550}
         rangeY={10000}
-        baseRadius={5}
+        baseRadius={1}
         baseSpeed={0.1}
       />
       <div className="grow z-50 absolute inset-0">
@@ -25,25 +25,28 @@ export default function Home() {
             <IoIosArrowDropdown size={40} className="animate-pulse" />
           </div>
           <div className="z-50 bg-transparent p-5 backdrop-blur-sm">
-            <h1 className="text-4xl font-semibold text-white">
+            <h1 className="text-4xl font-semibold text-foreground">
               Turn Memories Into
               <span className="text-primary font-extrabold px-1">
                 Timesless Treasures.
               </span>
             </h1>
           </div>
-          <div className="flex flex-row">
-            <Button asChild>
+          <div className="flex flex-row gap-5">
+            <Button
+              asChild
+              className="text-xl font-semibold text-primary-foreground"
+            >
               <Link href="/dashboard">Our Offers</Link>
             </Button>
             <Button
               asChild
               variant={"ghost"}
-              className="hover:bg-transparent hover:text-primary-foreground text-primary-foreground"
+              className="text-foreground border-b border-muted hover:bg-transparent rounded-none hover:border-border"
             >
               <Link href="/dashboard">
                 Try it out for free
-                <FaLongArrowAltRight className="mx-1" />
+                <FaLongArrowAltRight className="mx-1 text-primary" />
               </Link>
             </Button>
           </div>

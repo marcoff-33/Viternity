@@ -25,7 +25,7 @@ export const Vortex = (props: VortexProps) => {
   const particlePropCount = 9;
   const particlePropsLength = particleCount * particlePropCount;
   const rangeY = props.rangeY || 100;
-  const baseTTL = 50;
+  const baseTTL = 500;
   const rangeTTL = 5000;
   const baseSpeed = props.baseSpeed || 0.0;
   const rangeSpeed = props.rangeSpeed || 1.5;
@@ -173,7 +173,7 @@ export const Vortex = (props: VortexProps) => {
     ctx.save();
     ctx.lineCap = "round";
     ctx.lineWidth = radius;
-    ctx.strokeStyle = `hsla(${hue},100%,60%,${fadeInOut(life, ttl)})`; // hsla(hue, saturation, lightness, alpha)
+    ctx.strokeStyle = `hsla(50,20%,20%,${fadeInOut(life, ttl)})`; // hsla(hue, saturation, lightness, alpha)
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x2, y2);

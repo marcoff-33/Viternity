@@ -49,7 +49,7 @@ export default function NewVaultDrawer() {
         <DialogTrigger asChild>
           <Button variant="outline">+</Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px] p-5">
+        <DialogContent closeButton={true} className="sm:max-w-[425px] p-5">
           <DialogHeader>
             <DialogTitle>Set up a new Vault</DialogTitle>
             <DialogDescription>
@@ -155,8 +155,9 @@ function ProfileForm({
       const firstError = result.error.issues[0].message;
       setError(firstError);
       toast({
-        title: "Oops!",
+        title: "Invalid Data",
         description: firstError,
+        variant: "destructive",
       });
     }
   };
@@ -170,8 +171,11 @@ function ProfileForm({
         <Label htmlFor="vaultName">Vault Name</Label>
         <Input
           id="vaultName"
+          type="text"
           placeholder="Only visible in your Dashboard"
           onChange={(event) => handleInputChange(setVaultName, event)}
+          className=""
+          style={{ fontSize: "16px" }}
         />
       </div>
       <div className="grid gap-2">
@@ -192,7 +196,7 @@ function ProfileForm({
       </div>
       <div className="grid gap-2">
         <Select disabled>
-          <Label>Vault Theme {isValidSchema.error ? "yes" : "no"} </Label>
+          <Label>Vault Theme </Label>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a Theme" />
           </SelectTrigger>

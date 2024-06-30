@@ -105,9 +105,9 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
           ) : (
             <Link
               href={`/edit/${vaultId}`}
-              className="self-end text-center items-center font-semibold sm:text-lg relative bg-accent-foreground text-primary max-w-fit sm:pr-10 "
+              className="self-end lg:pr-20 text-center items-center font-semibold sm:text-lg relative bg-transparent text-primary max-w-fit "
             >
-              Edit Vault
+              Edit
             </Link>
           )}
           {vaultData && (

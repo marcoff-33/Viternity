@@ -10,8 +10,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <input
         type={type}
+        style={{ fontSize: "16px" }} // this is a hack to prevent zooming in on mobile
         className={cn(
-          "flex h-9 w-full text-accent bg-transparent px-3 py-1 text-sm shadow-sm transition-colors  file:border-0 file:bg-transparent file:text-transparent file:font-medium  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-9 w-full text-foreground bg-transparent px-3 py-1 text-sm shadow-sm transition-colors  file:border-0 file:bg-transparent file:text-transparent file:font-medium  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         ref={ref}
