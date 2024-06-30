@@ -95,8 +95,7 @@ function ProfileForm({
 }) {
   const [vaultName, setVaultName] = useState("Unnamed Vault");
   const [vaultStyle, setVaultStyle] = useState("default");
-  const [userPassword, setUserPassword] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
+  const [vaultPassword, setVaultPassword] = useState("");
   const [isPrivate, setIsPrivate] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -105,15 +104,18 @@ function ProfileForm({
     .object({
       vaultName: z.string(),
       vaultStyle: z.string(),
-      userPassword: z
+      vaultPassword: z
         .string()
-        .length(6, "User password must be exactly 6 characters"),
+        .length(
+          6,
+          "Vault password must be any combination of exactly 6 Numbers"
+        ),
       adminPassword: z
         .string()
         .length(6, "Admin password must be exactly 6 characters"),
       isPrivate: z.boolean(),
     })
-    .refine((data) => data.userPassword !== data.adminPassword, {
+    .refine((data) => data.vaultPassword !== data.adminPassword, {
       message: "User password and admin password must be different",
       path: ["adminPassword"], // This will highlight the adminPassword field if the error is thrown
     });
@@ -121,8 +123,7 @@ function ProfileForm({
   const newVault = {
     vaultName,
     vaultStyle,
-    userPassword, // must be exactly 6 characters
-    adminPassword, // must be exactly 6 characters
+    vaultPassword, // must be exactly 6 characters
     isPrivate,
   };
 
@@ -175,23 +176,15 @@ function ProfileForm({
           placeholder="Only visible in your Dashboard"
           onChange={(event) => handleInputChange(setVaultName, event)}
           className=""
-          style={{ fontSize: "16px" }}
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="vaultName">Admin Password</Label>
+        <Label htmlFor="vaultName">Vault Password</Label>
         <Input
           id="vaultName"
           placeholder="Must be exactly 6 numbers"
-          onChange={(event) => handleInputChange(setAdminPassword, event)}
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="vaultName">User Password</Label>
-        <Input
-          id="vaultName"
-          placeholder="Must be exactly 6 numbers"
-          onChange={(event) => handleInputChange(setUserPassword, event)}
+          type="tel"
+          onChange={(event) => handleInputChange(setVaultPassword, event)}
         />
       </div>
       <div className="grid gap-2">
