@@ -24,7 +24,7 @@ export default function QrCodeModal() {
       >
         <div>QR Code</div>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent closeButton={true}>
         <DialogHeader>
           <img
             src={`https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${`https://viternity.vercel.app/`}/${vaultId}`}
