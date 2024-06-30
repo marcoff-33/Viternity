@@ -100,25 +100,13 @@ function ProfileForm({
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const vaultSchema = z
-    .object({
-      vaultName: z.string(),
-      vaultStyle: z.string(),
-      vaultPassword: z
-        .string()
-        .length(
-          6,
-          "Vault password must be any combination of exactly 6 Numbers"
-        ),
-      adminPassword: z
-        .string()
-        .length(6, "Admin password must be exactly 6 characters"),
-      isPrivate: z.boolean(),
-    })
-    .refine((data) => data.vaultPassword !== data.adminPassword, {
-      message: "User password and admin password must be different",
-      path: ["adminPassword"], // This will highlight the adminPassword field if the error is thrown
-    });
+  const vaultSchema = z.object({
+    vaultName: z.string(),
+    vaultStyle: z.string(),
+    vaultPassword: z
+      .string()
+      .length(6, "Vault password must be any combination of exactly 6 Numbers"),
+  });
 
   const newVault = {
     vaultName,
@@ -175,13 +163,14 @@ function ProfileForm({
           type="text"
           placeholder="Only visible in your Dashboard"
           onChange={(event) => handleInputChange(setVaultName, event)}
-          className=""
+          className="ring-1 ring-muted "
         />
       </div>
       <div className="grid gap-2">
         <Label htmlFor="vaultName">Vault Password</Label>
         <Input
           id="vaultName"
+          className="ring-1 ring-muted "
           placeholder="Must be exactly 6 numbers"
           type="tel"
           onChange={(event) => handleInputChange(setVaultPassword, event)}
