@@ -21,11 +21,12 @@ import ListItem from "@tiptap/extension-list-item";
 import TextStyle from "@tiptap/extension-text-style";
 import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { server_uploadHTML } from "@/app/utils/serverActions";
 import { set } from "zod";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const buttonStyles =
   "hover:bg-muted/80 border transition-all px-3 py-2 rounded-md duration-300 text-center items-center";
@@ -56,7 +57,7 @@ const MenuBar = ({
   };
 
   return (
-    <div className="lg:hidden flex justify-center fixed top-10 inset-x-0 z-[1000]">
+    <div className="lg:hidden flex justify-center sticky top-[50dvh] pb-2 pt-0 inset0 z-[1000]">
       <div className="flex flex-row justify-center p-1 gap-5 ring-1 ring-ring rounded-lg bg-card">
         <button
           onClick={handleSave}
@@ -269,7 +270,7 @@ const TextEditor = ({
   }, [vaultText, editor]);
 
   return (
-    <div className="text-foreground relative max-w-[85vw] min-w-[85vw] md:max-w-2xl md:min-w-full">
+    <div className="text-foreground relative max-w-[85vw] min-w-[85vw] md:max-w-2xl md:min-w-full ">
       {editable && (
         <>
           <MenuBar
@@ -289,7 +290,7 @@ const TextEditor = ({
         </>
       )}
       <div
-        className={`text-foreground outline-none max-w-full bg-card border border-border rounded-lg p-10 ${
+        className={`text-foreground bg-card rounded-sm outline-none max-w-full p-5 ${
           editable && ""
         }`}
       >
@@ -299,6 +300,7 @@ const TextEditor = ({
           readOnly={!editable}
           aria-readonly={!editable}
           className=""
+          style={{ fontSize: "16px" }}
         />
       </div>
     </div>
@@ -333,8 +335,8 @@ const MenuBarDesktop = ({
   };
 
   return (
-    <div className="hidden lg:flex justify-center fixed top-12 inset-x-0 z-[1000]">
-      <div className="flex flex-row justify-center p-1 gap-5 ring-1 ring-ring rounded-lg bg-card">
+    <div className="hidden lg:flex justify-center sticky p-5 top-0 inset-x-0 z-[1000]">
+      <div className="shadow-lg shadow-background flex flex-row justify-center p-1 gap-5 ring-1 ring-ring rounded-lg bg-card">
         <button
           onClick={handleSave}
           disabled={!allowSave}
