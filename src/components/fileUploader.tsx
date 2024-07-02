@@ -84,7 +84,7 @@ export default function FileUploader({
         type="file"
         id="file"
         name="file"
-        className="z-[5000] cursor-pointer text-transparent file:hidden absolute flex justify-center items-center text-center max-w-full"
+        className="z-[5000] shadow-none cursor-pointer text-transparent file:hidden absolute flex justify-center items-center text-center max-w-full"
         onChange={(event) => {
           handleFileChange(event);
         }}

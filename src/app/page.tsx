@@ -10,16 +10,7 @@ import { IoIosArrowDropdown } from "react-icons/io";
 export default function Home() {
   return (
     <div className="flex min-h-screen bg-background flex-col relative">
-      <Vortex
-        className="min-h-screen w-full z-50 border-b border-border"
-        backgroundColor="transparent"
-        baseHue={-100}
-        particleCount={550}
-        rangeY={10000}
-        baseRadius={1}
-        baseSpeed={0.1}
-      />
-      <div className="grow z-50 absolute inset-0">
+      <div className="grow z-50 ">
         <div className="z-50 container relative flex flex-col gap-10 items-center justify-center min-h-screen overflow-hidden min-w-full">
           <div className="absolute bottom-10 left-0 right-0 text-primary text-center items-center justify-center flex self-center container">
             <IoIosArrowDropdown size={40} className="animate-pulse" />

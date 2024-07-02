@@ -75,7 +75,7 @@ export function ImagesCarousel({
         <div className="w-[300px] rounded-lg">
           <AspectRatio
             ratio={5 / 4}
-            className="relative outline-none rounded-3xl shadow-md shadow-foreground"
+            className="relative outline-none rounded-3xl shadow-md shadow-black"
           >
             {vaultImages && vaultImages.length > 0 ? (
               <>

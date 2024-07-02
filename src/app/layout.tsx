@@ -37,9 +37,9 @@ export default function RootLayout({
         >
           <ThemeProvider
             attribute="class"
+            disableTransitionOnChange={true}
             defaultTheme="system"
             enableSystem
-            disableTransitionOnChange
           >
             <Suspense fallback={<Loading />}>
               <Navbar />

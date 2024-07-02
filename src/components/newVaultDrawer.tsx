@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useMediaQuery } from "@/app/hooks/use-media-query";
 import {
   Select,
@@ -38,6 +38,7 @@ import { server_createVault } from "../app/utils/serverActions";
 import { useRouter } from "next/navigation";
 import { title } from "process";
 import { toast } from "./ui/use-toast";
+import { useTheme } from "next-themes";
 
 export default function NewVaultDrawer() {
   const [open, setOpen] = useState(false);
@@ -47,7 +48,12 @@ export default function NewVaultDrawer() {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline">+</Button>
+          <Button
+            className="text-primary text-2xl text-center items-center self-center"
+            variant={"outline"}
+          >
+            +
+          </Button>
         </DialogTrigger>
         <DialogContent closeButton={true} className="sm:max-w-[425px] p-5">
           <DialogHeader>
@@ -65,7 +71,12 @@ export default function NewVaultDrawer() {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant="outline">+</Button>
+        <Button
+          variant="outline"
+          className="text-primary text-2xl text-center items-center self-center"
+        >
+          +
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="text-left">
@@ -94,7 +105,8 @@ function ProfileForm({
   setOpen: React.Dispatch<SetStateAction<boolean>>;
 }) {
   const [vaultName, setVaultName] = useState("Unnamed Vault");
-  const [vaultStyle, setVaultStyle] = useState("default");
+  const { setTheme, theme } = useTheme();
+  const [vaultStyle, setVaultStyle] = useState(theme || "default");
   const [vaultPassword, setVaultPassword] = useState("");
   const [isPrivate, setIsPrivate] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -121,6 +133,9 @@ function ProfileForm({
   ) => {
     setState(event.target.value);
   };
+  useEffect(() => {
+    setTheme(vaultStyle);
+  }, [vaultStyle]);
 
   const isValidSchema = vaultSchema.safeParse(newVault);
 
@@ -177,19 +192,21 @@ function ProfileForm({
         />
       </div>
       <div className="grid gap-2">
-        <Select disabled>
+        <Select
+          onValueChange={(value) => setVaultStyle(value)}
+          value={vaultStyle}
+        >
           <Label>Vault Theme </Label>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a Theme" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="z-[5000]">
             <SelectGroup>
-              <SelectLabel>Fruits</SelectLabel>
-              <SelectItem value="apple">placeholder</SelectItem>
-              <SelectItem value="banana">placeholder</SelectItem>
-              <SelectItem value="blueberry">placeholder</SelectItem>
-              <SelectItem value="grapes">placeholder</SelectItem>
-              <SelectItem value="pineapple">placeholder</SelectItem>
+              <SelectLabel>Themes</SelectLabel>
+              <SelectItem value="viternity">Default</SelectItem>
+              <SelectItem value="dark">Dark</SelectItem>
+              <SelectItem value="light">Light</SelectItem>
+              <SelectItem value="violet">Violet</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

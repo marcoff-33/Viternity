@@ -18,16 +18,16 @@ export type Vault = {
   vaultTitle: string;
 };
 
-export type dashboardInputMode = "Edit" | "Delete" | "Navigate To";
+export type dashboardInputMode = "Edit" | "Delete" | "Visit";
 
 export default function UserVaults({ vaults }: { vaults: Vault[] }) {
-  const [inputMode, setInputMode] = useState<dashboardInputMode>("Navigate To");
+  const [inputMode, setInputMode] = useState<dashboardInputMode>("Visit");
   const [isAnimating, setIsAnimating] = useState(false);
 
   return (
     <div className="flex flex-col gap-5 justify-center items-center">
       <div
-        className={`min-w-full  items-center flex justify-around bg-background border-b border-border pb-5 transition-colors duration-500 ${
+        className={`min-w-full items-center flex justify-around bg-background border-b border-border pb-5 transition-colors duration-500 ${
           inputMode === "Delete" ? "border-destructive" : "border-border"
         } ${inputMode === "Edit" ? "border-primary" : "border-border"}`}
       >
@@ -39,7 +39,7 @@ export default function UserVaults({ vaults }: { vaults: Vault[] }) {
           setIscurentlyAnimating={setIsAnimating}
         />
         <InputButton
-          buttonType={"Navigate To"}
+          buttonType={"Visit"}
           currentInputMode={inputMode}
           setInputMode={setInputMode}
           isCurrentlyAnimating={isAnimating}
@@ -53,7 +53,7 @@ export default function UserVaults({ vaults }: { vaults: Vault[] }) {
           setIscurentlyAnimating={setIsAnimating}
         />
       </div>
-      <div className="text-4xl gap-3 text-foreground flex w-[80vw] justify-center flex-col lg:flex-row">
+      <div className="text-4xl gap-3 text-foreground flex w-[80vw] justify-center flex-col ">
         <div className={`basis-1/2 self-center items-start text-end relative`}>
           <div
             className={`transition-all duration-500 ${
@@ -64,7 +64,7 @@ export default function UserVaults({ vaults }: { vaults: Vault[] }) {
           </div>
         </div>
         <p
-          className={`basis-1/2 text-center lg:text-start transition-colors duration-500 ${
+          className={`basis-1/2 text-center  transition-colors duration-500 ${
             inputMode === "Delete" ? "text-destructive" : "text-foreground"
           }`}
         >
@@ -110,7 +110,7 @@ export function InputButton({
       ? "bg-destructive"
       : buttonType == "Edit"
       ? "bg-primary"
-      : "bg-secondary";
+      : "bg-card";
   const textColor =
     buttonType == "Edit"
       ? "text-primary-foreground"
@@ -131,8 +131,8 @@ export function InputButton({
       className={`${
         buttonType == currentInputMode && !isCurrentlyAnimating
           ? `${textColor} ${buttonBackgroundColor}`
-          : `bg-transparent text-primary opacity-50`
-      } rounded-none first:rounded-l-md last:rounded-r-md border py-1 px-1 lg:font-semibold lg:text-xl font-md text-sm grow transition-all duration-300`} // border-border
+          : `bg-transparent text-primary `
+      } rounded-none first:rounded-l-md last:rounded-r-md border py-1 px-1 lg:font-semibold lg:text-xl font-semibold text-sm grow transition-all duration-300`}
     >
       {buttonType}
     </button>

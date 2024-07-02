@@ -29,7 +29,7 @@ export default function vaultButton({
       : "border-border";
   return (
     <Button className="" asChild variant={"ghost"}>
-      {currentInputMode == "Navigate To" ? (
+      {currentInputMode == "Visit" ? (
         <Link
           href={`/${vaultId}`}
           className={`z-50 min-w-[100px] min-h-[50px] rounded-lg border text-center flex justify-center items-center text-foreground bg-card transiton-colors duration-300 ${borderColor}`}

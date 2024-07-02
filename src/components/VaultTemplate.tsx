@@ -26,6 +26,7 @@ import { FaHeart } from "react-icons/fa";
 import LikeCounter from "./LikeCounter";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { useTheme } from "next-themes";
 
 export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
@@ -40,11 +41,13 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   );
   const [showTitleEditor, setShowTitleEditor] = useState<boolean>(false);
   const { toast } = useToast();
+  const { setTheme } = useTheme();
 
   const handleFirstLoad = async () => {
     const data = await server_getVaultData(vaultId);
     setVaultData(data);
     setVaultTitle(data.vaultTitle);
+    setTheme(data.style);
   };
   const loadVaultText = async () => {
     if (vaultData && vaultData.vaultText) {
@@ -130,7 +133,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
 
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
   return (
-    <div className="py-20 ">
+    <div className="py-20">
       {otpIsCorrect ? (
         <div className="flex justify-center flex-col w-full relative">
           {isEditable ? (
