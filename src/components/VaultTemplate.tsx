@@ -7,6 +7,7 @@ import {
   server_formatImageUrl,
   server_getVaultData,
   server_getVaultTextContent,
+  server_updateVaultTitle,
 } from "@/app/utils/serverActions";
 import { ImagesCarousel } from "./ImagesCarousel";
 import TextEditor from "./TipTap";
@@ -19,6 +20,12 @@ import Link from "next/link";
 import { set } from "zod";
 import { useToast } from "./ui/use-toast";
 import { Toaster } from "./ui/toaster";
+import { CiEdit, CiHeart } from "react-icons/ci";
+import { GiCandleLight } from "react-icons/gi";
+import { FaHeart } from "react-icons/fa";
+import LikeCounter from "./LikeCounter";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
@@ -28,12 +35,16 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [otpIsCorrect, setOtpIsCorrect] = useState<boolean>(
     pathName.includes("edit") ? false : true
   );
-
+  const [vaultTitle, setVaultTitle] = useState<string>(
+    vaultData?.vaultTitle || ""
+  );
+  const [showTitleEditor, setShowTitleEditor] = useState<boolean>(false);
   const { toast } = useToast();
 
   const handleFirstLoad = async () => {
     const data = await server_getVaultData(vaultId);
     setVaultData(data);
+    setVaultTitle(data.vaultTitle);
   };
   const loadVaultText = async () => {
     if (vaultData && vaultData.vaultText) {
@@ -53,6 +64,34 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
       console.log("loaded", vaultData, vaultId);
     }
   }, [vaultData]);
+
+  const handleUpdateTitle = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!vaultData || vaultData.vaultTitle === vaultTitle) {
+      toast({
+        title: "No change",
+        description: "The title is the same, no update needed.",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      await server_updateVaultTitle(vaultId, vaultTitle);
+      setVaultData({ ...vaultData, vaultTitle: vaultTitle });
+      setShowTitleEditor(false);
+      toast({
+        title: "Success",
+        description: "Vault title updated successfully",
+        variant: "successful",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update vault title",
+        variant: "destructive",
+      });
+    }
+  };
 
   // callback for the file uploader to updte the carousel images
   const handleNewImage = async (
@@ -91,7 +130,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
 
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
   return (
-    <div className="py-20">
+    <div className="py-20 ">
       {otpIsCorrect ? (
         <div className="flex justify-center flex-col w-full relative">
           {isEditable ? (
@@ -111,13 +150,53 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
             </Link>
           )}
           {vaultData && (
-            <div className="self-center">
+            <div className="self-center items-center flex justify-center flex-col gap-2 w-full">
               <ImagesCarousel
                 vaultImages={vaultData!.imageUrls}
                 vaultId={vaultId}
                 onImageDelete={handleNewImage}
                 isEditable={isEditable}
               />
+
+              <div className="text-center items-center text-4xl font-medium px-10 pb-10 pt-5 border-b border-border flex flex-col min-w-full justify-center gap-5">
+                {!isEditable ? (
+                  <div className="text-foreground">{vaultData.vaultTitle}</div>
+                ) : (
+                  <div className="">
+                    {!showTitleEditor ? (
+                      <div
+                        className="text-foreground flex flex-col lg:flex-row justify-center items-center gap-5"
+                        onClick={() => setShowTitleEditor(true)}
+                      >
+                        {vaultData.vaultTitle}
+                        <div className="text-sm font-light text-foreground">
+                          <CiEdit size={30} />
+                        </div>
+                      </div>
+                    ) : (
+                      <form onSubmit={handleUpdateTitle}>
+                        <Input
+                          placeholder="Add a new Name / Title"
+                          className="text-2xl border-muted border"
+                          onChange={(e) => setVaultTitle(e.target.value)}
+                          autoFocus
+                        />
+                        <div className="flex flex-row justify-center gap-2 p-2">
+                          <div
+                            className="text-sm font-light flex justify-center items-center border border-border rounded-lg py-2 px-5"
+                            onClick={() => setShowTitleEditor(false)}
+                          >
+                            <p>Cancel</p>
+                          </div>
+                          <Button className="" type="submit" id="submit">
+                            Save
+                          </Button>
+                        </div>
+                      </form>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           )}
           <div className="relative py-10 flex flex-col justify-center items-center gap-5 w-full">

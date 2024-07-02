@@ -15,6 +15,7 @@ export type Vault = {
   imageUrls: string[];
   vaultText: string;
   vaultPassword: string;
+  vaultTitle: string;
 };
 
 export type dashboardInputMode = "Edit" | "Delete" | "Navigate To";

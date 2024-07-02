@@ -75,7 +75,7 @@ export function ImagesCarousel({
         <div className="w-[300px] rounded-lg">
           <AspectRatio
             ratio={5 / 4}
-            className="relative outline-none rounded-lg "
+            className="relative outline-none rounded-3xl shadow-md shadow-foreground"
           >
             {vaultImages && vaultImages.length > 0 ? (
               <>
@@ -93,7 +93,7 @@ export function ImagesCarousel({
               <div className="w-full h-full flex justify-center items-center rounded-3xl bg-gradient-to-b from-zinc-800 to-neutral-900"></div>
             )}
           </AspectRatio>
-          <div className="flex flex-row justify-center">
+          <div className="flex flex-row justify-center py-2">
             {vaultImages && vaultImages.length > 0 && (
               <div className="flex flex-row justify-center">
                 {vaultImages.map((dot, index) => (
@@ -136,8 +136,8 @@ export function ImagesCarousel({
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="w-[50px] h-[40px] hidden sm:inline-flex" />
-          <CarouselNext className="w-[50px] h-[40px] hidden sm:inline-flex" />
+          <CarouselPrevious className="w-[50px] h-[40px] inline-flex bg-card ring-1 ring-ring" />
+          <CarouselNext className="w-[50px] h-[40px] inline-flex  bg-card ring-1 ring-ring" />
         </Carousel>
         <div className="flex flex-row justify-center  absolute bottom-0 left-0 right-0">
           {vaultImages && vaultImages.length > 0 && (

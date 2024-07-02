@@ -108,6 +108,7 @@ export const server_createVault = async ({
         vaultText: "",
         isPrivate,
         vaultPassword,
+        vaultTitle: "",
       },
       { merge: true }
     );
@@ -297,4 +298,15 @@ export const server_formatImageUrl = async (
 
   const formattedUrl = downloadURL.replace(fromBaseUrl, toBaseUrl);
   return formattedUrl;
+};
+
+export const server_updateVaultTitle = async (
+  vaultId: string,
+  newTitle: string
+) => {
+  const db = getFirestore(firebase_app);
+  const vaultRef = doc(db, "vaults", vaultId);
+  await updateDoc(vaultRef, {
+    vaultTitle: newTitle,
+  });
 };

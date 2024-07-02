@@ -57,7 +57,7 @@ const MenuBar = ({
   };
 
   return (
-    <div className="lg:hidden flex justify-center sticky top-[50dvh] pb-2 pt-0 inset0 z-[1000]">
+    <div className="lg:hidden flex justify-center sticky top-[20vh] pb-2 pt-0 inset0 z-[1000]">
       <div className="flex flex-row justify-center p-1 gap-5 ring-1 ring-ring rounded-lg bg-card">
         <button
           onClick={handleSave}
