@@ -133,7 +133,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
 
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
   return (
-    <div className="py-20">
+    <div className="py-20 bg-background">
       {otpIsCorrect ? (
         <div className="flex justify-center flex-col w-full relative">
           {isEditable ? (

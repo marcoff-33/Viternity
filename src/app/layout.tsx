@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Averia_Serif_Libre } from "next/font/google";
 import "./globals.css";
-import { Inter as FontSans } from "next/font/google";
 
 import { ClerkProvider, UserButton } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
@@ -10,15 +9,18 @@ import Loading from "./loading";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ThemeToggle } from "@/components/themeToggle";
 
 export const metadata: Metadata = {
   title: "Viternity",
   description: "A place to store & share your memories",
 };
 
-const fontSans = FontSans({
+const averiaSerifLibre = Averia_Serif_Libre({
   subsets: ["latin"],
-  variable: "--font-sans",
+  weight: ["300", "400", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-Serif",
 });
 
 export default function RootLayout({
@@ -31,8 +33,8 @@ export default function RootLayout({
       <html lang="en">
         <body
           className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
+            "min-h-screen bg-backgroundfont-Serif antialiased relative",
+            averiaSerifLibre.className
           )}
         >
           <ThemeProvider

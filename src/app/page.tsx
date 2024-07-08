@@ -1,58 +1,75 @@
+import { ImagesCarousel } from "@/components/ImagesCarousel";
 import { BackgroundGradientAnimation } from "@/components/bgAnimation";
 import { BackgroundBeams } from "@/components/bgBeams";
 import { Vortex } from "@/components/bgSparkles";
 import { PriceCard } from "@/components/priceCard";
+import { ThemeToggle } from "@/components/themeToggle";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { CiSquarePlus } from "react-icons/ci";
 import { FaLongArrowAltRight } from "react-icons/fa";
-import { IoIosArrowDropdown } from "react-icons/io";
+import { SiSimplelogin } from "react-icons/si";
+import { server_getVaultData } from "./utils/serverActions";
+import { BsQrCode } from "react-icons/bs";
+import { LuQrCode } from "react-icons/lu";
 
-export default function Home() {
+export default async function Home() {
+  const data = await server_getVaultData("LancPr6TPNSZPZtq8ckj");
   return (
-    <div className="flex min-h-screen bg-background flex-col relative">
-      <div className="grow z-50 ">
-        <div className="z-50 container relative flex flex-col gap-10 items-center justify-center min-h-screen overflow-hidden min-w-full">
-          <div className="absolute bottom-10 left-0 right-0 text-primary text-center items-center justify-center flex self-center container">
-            <IoIosArrowDropdown size={40} className="animate-pulse" />
-          </div>
-          <div className="z-50 bg-transparent p-5 backdrop-blur-sm">
-            <h1 className="text-4xl font-semibold text-foreground">
-              Turn Memories Into
-              <span className="text-primary font-extrabold px-1">
-                Timesless Treasures.
-              </span>
-            </h1>
-          </div>
-          <div className="flex flex-row gap-5">
-            <Button
-              asChild
-              className="text-xl font-semibold text-primary-foreground"
-            >
-              <Link href="/dashboard">Our Offers</Link>
-            </Button>
-            <Button
-              asChild
-              variant={"ghost"}
-              className="text-foreground border-b border-muted hover:bg-transparent rounded-none hover:border-border"
-            >
-              <Link href="/dashboard">
-                Try it out for free
-                <FaLongArrowAltRight className="mx-1 text-primary" />
-              </Link>
-            </Button>
+    <main className="container flex-col  bg-background min-h-screen flex">
+      <article className="border-b-[2px] border-border min-h-[90vh] md:px-5 flex-col bg-background grow gap-2 flex justify-center rounded-[3px]">
+        <div className="basis-1/2 self-center md:text-center items-end flex justify-end text-primary text-4xl font-bold">
+          I Tuoi ricordi dal Mondo Digitale al Materiale.
+        </div>
+        <div className="basis-1/2 self-center py-2 md:text-center items-end flex justify-end text-secondary text-2xl font-semibold">
+          Crea le Tue Gallerie di Immagini e Video e condividile in qualsiasi
+          luogo in totale sicurezza via QR Code.
+        </div>
+        <LuQrCode className="self-center text-primary mr-5 md:mr-0" size={50} />
+        <div className="basis-1/2 flex md:flex-row flex-col w-full gap-5 justify-center pt-10">
+          <Button className="text-xl font-extrabold md:pr-20 pr-10 pl-5">
+            OFFERTE
+          </Button>
+          <Button className="text-xl font-semibold" variant={"link"} asChild>
+            <Link href="/dashboard">
+              PROVA GRATUITA
+              <FaLongArrowAltRight className="mx-1 text-primary" size={15} />
+            </Link>
+          </Button>
+        </div>
+      </article>
+      <article className="gap-10 px-10  flex md:flex-row flex-col md:justify-around justify-center items-center bg-background rounded-[3px] w-full h-fit my-10">
+        <div className="max-w-fit items-center self-center flex justify-center flex-col gap-10 border-b-[2px] border-border pb-10">
+          <h1 className="text-4xl text-primary basis-1/2 items-center py-5">
+            Carica le tue immagini e video.
+          </h1>
+          <ImagesCarousel
+            isEditable={false}
+            vaultId="LancPr6TPNSZPZtq8ckj"
+            vaultImages={data.imageUrls}
+            isDecorative={false}
+            isDisabled={false}
+          />
+          <p className="text-secondary">
+            Aggiungi i Tuoi ricordi da condividire pubblicamente a chiunque
+            scansioni il codice QR, o rendi la tua Galleria privata via
+            password.
+          </p>
+        </div>
+      </article>
+      <article className="gap-10 px-10 flex md:flex-row flex-col md:justify-around justify-center items-center bg-background rounded-[3px] h-fit w-full my-10">
+        <div className="max-w-fit items-center flex justify-center self-start pt-5">
+          <div className="">
+            <h2 className="text-4xl font-bold text-primary">
+              Personalizza la tua Galleria.
+            </h2>
+            <p>
+              Scegli l'aspetto che preferisci per la tua Galleria.......(PAGINA
+              DA COMPLETARE)
+            </p>
           </div>
         </div>
-      </div>
-      <div className="container min-h-screen py-10">
-        <h1 className="text-white font-semibold text-4xl self-center text-center">
-          Pricing & Features
-        </h1>
-        <div className="flex lg:flex-row w-full justify-center py-20 gap-10 flex-col items-center lg:items-start">
-          <PriceCard planType={"Free"} />
-          <PriceCard planType="Premium" />
-          <PriceCard className="" planType="Tailored" />
-        </div>
-      </div>
-    </div>
+      </article>
+    </main>
   );
 }

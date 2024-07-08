@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { RxDotFilled } from "react-icons/rx";
 import { IoIosPhotos } from "react-icons/io";
-import { Vault } from "./UserVaults";
+
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { FaTrashAlt } from "react-icons/fa";
 import { revalidatePath } from "next/cache";
@@ -33,11 +33,15 @@ export function ImagesCarousel({
   vaultId,
   onImageDelete,
   isEditable,
+  isDecorative,
+  isDisabled,
 }: {
   vaultImages: string[];
   vaultId: string;
-  onImageDelete: (imageUrl: string, action: "add" | "remove") => void;
+  onImageDelete?: (imageUrl: string, action: "add" | "remove") => void;
   isEditable: boolean;
+  isDecorative?: boolean;
+  isDisabled?: boolean;
 }) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
@@ -62,7 +66,7 @@ export function ImagesCarousel({
     setIsProcessing(false);
     api?.scrollPrev();
     setTimeout(() => {
-      onImageDelete(imageUrl, "remove");
+      onImageDelete!(imageUrl, "remove");
     }, 800);
   };
 
@@ -70,14 +74,14 @@ export function ImagesCarousel({
     <Dialog>
       <DialogTrigger
         className="rounded-lg max-h-fit self-center outline-none"
-        disabled={vaultImages.length == 0}
+        disabled={vaultImages.length == 0 || isDisabled}
       >
         <div className="w-[300px] rounded-lg">
           <AspectRatio
             ratio={5 / 4}
             className="relative outline-none rounded-3xl shadow-md shadow-black"
           >
-            {vaultImages && vaultImages.length > 0 ? (
+            {vaultImages && !isDecorative && vaultImages.length > 0 ? (
               <>
                 <IoIosPhotos
                   className="absolute z-50 text-white top-2 right-2"
@@ -90,7 +94,7 @@ export function ImagesCarousel({
                 />
               </>
             ) : (
-              <div className="w-full h-full flex justify-center items-center rounded-3xl bg-gradient-to-b from-zinc-800 to-neutral-900"></div>
+              <div className="w-full h-full flex justify-center items-center rounded-3xl bg-gradient-to-b from-background via-border to-primary border border-border"></div>
             )}
           </AspectRatio>
           <div className="flex flex-row justify-center py-2">

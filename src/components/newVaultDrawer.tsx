@@ -49,7 +49,7 @@ export default function NewVaultDrawer() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button
-            className="text-primary text-2xl text-center items-center self-center"
+            className="text-primary text-2xl text-center items-center self-center hover:text-primary"
             variant={"outline"}
           >
             +
@@ -71,10 +71,7 @@ export default function NewVaultDrawer() {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button
-          variant="outline"
-          className="text-primary text-2xl text-center items-center self-center"
-        >
+        <Button className="text-primary h text-2xl text-center items-center self-center bg-background hover:bg-card border-border">
           +
         </Button>
       </DrawerTrigger>

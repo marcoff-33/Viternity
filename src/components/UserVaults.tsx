@@ -103,7 +103,7 @@ export function InputButton({
     setTimeout(() => {
       setIscurentlyAnimating(false);
       setInputMode(buttonType);
-    }, 250);
+    }, 50);
   };
   const buttonBackgroundColor =
     buttonType == "Delete"
