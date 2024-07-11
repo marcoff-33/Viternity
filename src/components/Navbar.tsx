@@ -25,13 +25,15 @@ export default function Navbar() {
 
   return (
     <header
-      className={`z-[10000] transition-all duration-200 w-full justify-center items-center  bg-background top-0 ${
-        isScrolled && fullRenderInPath.includes(pathName) ? "py-5" : "py-2"
+      className={`z-[1000] transition-all duration-200 w-full justify-center items-center backdrop-blur-md  top-0 ${
+        isScrolled && fullRenderInPath.includes(pathName)
+          ? "md:py-5 bg-background/70"
+          : "md:py-2 bg-background"
       } ${fullRenderInPath.includes(pathName) ? "sticky" : "relative"}`}
     >
       <div
         className={`container w-full flex flex-col transition-all gap-5 duration-200 ${
-          isScrolled ? "h-[50px]" : "h-[120px]"
+          isScrolled ? "md:h-[3vh]" : "md:h-[120px]"
         } `}
       >
         <Link
@@ -42,14 +44,14 @@ export default function Navbar() {
         </Link>
 
         <div
-          className={`bg-background grow flex border rounded-full shadow-md   transition-all duration-200 justify-center ${
+          className={`bg-background grow flex border rounded-[2px] shadow-md   transition-all duration-200 justify-center ${
             isScrolled && fullRenderInPath.includes(pathName)
               ? "shadow-black border-border"
               : "shadow-transparent border-transparent"
           } ${fullRenderInPath.includes(pathName) ? "flex" : "hidden"}`}
         >
           <NavLink href="/faq" isScrolled={isScrolled} currentPath={pathName}>
-            Guida
+            Dashboard
           </NavLink>
           <NavLink
             href="/pricing"
@@ -66,7 +68,6 @@ export default function Navbar() {
             Esempi
           </NavLink>
         </div>
-        <div className="text-end items-end">C</div>
       </div>
     </header>
   );
@@ -86,7 +87,7 @@ export const NavLink = ({
   return (
     <Link
       href={href}
-      className={`px-5 py-2 last:border-none first:rounded-l-full last:rounded-r-full border-r border-border transition-all duration-200 flex-col basis-1/3 text-center items-center flex justify-center ${
+      className={`px-5 py-1 last:border-none first:rounded-l-[2px] last:rounded-r-[1px] border-r border-border transition-all duration-200 flex-col basis-1/3 text-center items-center flex justify-center ${
         currentPath === href
           ? "bg-primary text-primary-foreground"
           : "bg-transparent"
