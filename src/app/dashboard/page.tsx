@@ -2,14 +2,23 @@ import UserVaults from "@/components/UserVaults";
 import CreateVault from "@/components/createVault";
 import React from "react";
 import { server_getUserVaults } from "../utils/serverActions";
+import { auth } from "../utils/auth";
+import { SignIn } from "@/components/SignIn";
 
 export default async function page() {
-  const userVaults = await server_getUserVaults();
+  const session = await auth();
+  const userVaults = session ? await server_getUserVaults() : undefined;
 
   return (
     <div className="min-h-screen bg-background flex justify-center items-center flex-col gap-5 text-foreground">
-      <UserVaults vaults={userVaults} />
-      <CreateVault />
+      {session && userVaults ? (
+        <>
+          <UserVaults vaults={userVaults} />
+          <CreateVault />{" "}
+        </>
+      ) : (
+        <SignIn />
+      )}
     </div>
   );
 }

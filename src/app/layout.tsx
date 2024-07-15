@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import { Averia_Serif_Libre } from "next/font/google";
 import "./globals.css";
 
-import { ClerkProvider, UserButton } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 import Loading from "./loading";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { ThemeToggle } from "@/components/themeToggle";
+
+import { SessionProvider, useSession } from "next-auth/react";
+import { auth } from "./utils/auth";
 
 export const metadata: Metadata = {
   title: "Viternity",
@@ -23,34 +24,35 @@ const averiaSerifLibre = Averia_Serif_Libre({
   variable: "--font-Serif",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body
-          className={cn(
-            "min-h-screen bg-backgroundfont-Serif antialiased relative",
-            averiaSerifLibre.className
-          )}
+    <html lang="en">
+      <body
+        className={cn(
+          "min-h-screen bg-backgroundfont-Serif antialiased relative",
+          averiaSerifLibre.className
+        )}
+      >
+        <ThemeProvider
+          attribute="class"
+          disableTransitionOnChange={true}
+          defaultTheme="system"
+          enableSystem
         >
-          <ThemeProvider
-            attribute="class"
-            disableTransitionOnChange={true}
-            defaultTheme="system"
-            enableSystem
-          >
+          <SessionProvider session={session}>
             <Suspense fallback={<Loading />}>
               <Navbar />
               <main>{children}</main>
               <Toaster />
             </Suspense>
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+          </SessionProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

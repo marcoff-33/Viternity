@@ -13,9 +13,10 @@ import { server_getVaultData } from "./utils/serverActions";
 import { BsQrCode } from "react-icons/bs";
 import { LuCoffee, LuPlane, LuQrCode } from "react-icons/lu";
 import { IoIosMegaphone } from "react-icons/io";
+import { SignIn } from "@/components/SignIn";
+import { auth } from "@/app/utils/auth";
 
 export default async function Home() {
-  const data = await server_getVaultData("LancPr6TPNSZPZtq8ckj");
   return (
     <main className="flex-col  bg-background min-h-screen flex">
       <article className="border-y-[2px] mt-5 relative border-border md:min-h-[80vh] md:px-5 flex-col bg-background grow gap-2 flex justify-center rounded-[3px] max-h-[80vh]">

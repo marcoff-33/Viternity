@@ -32,9 +32,7 @@ export default function Navbar() {
       } ${fullRenderInPath.includes(pathName) ? "sticky" : "relative"}`}
     >
       <div
-        className={`container w-full flex flex-col transition-all gap-5 duration-200 ${
-          isScrolled ? "md:h-[3vh]" : "md:h-[120px]"
-        } `}
+        className={`container w-full flex flex-col transition-all gap-5 duration-200 `}
       >
         <Link
           href="/"

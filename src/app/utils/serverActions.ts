@@ -1,6 +1,6 @@
 "use server";
 import firebase_app from "@/firebase/config";
-import { auth } from "@clerk/nextjs/server";
+
 import {
   getFirestore,
   doc,
@@ -27,12 +27,11 @@ import {
 } from "firebase/storage";
 import { url } from "inspector";
 import { revalidatePath } from "next/cache";
+import { auth } from "./auth";
 
-export const server_handleUser = async () => {
-  const { userId } = auth();
+export const server_handleNewUser = async (userId: string) => {
   const db = getFirestore(firebase_app);
   const docRef = doc(db, "users", userId!);
-
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
@@ -46,7 +45,9 @@ export const server_handleUser = async () => {
 };
 // todo: refactor create user logic
 export const server_getUserVaults = async () => {
-  const { userId } = auth();
+  const session = await auth();
+  const userId = session?.user.userId;
+
   const db = getFirestore(firebase_app);
   const vaultsCollection = collection(db, "vaults");
   const queryVaults = query(vaultsCollection, where("authorId", "==", userId));
@@ -73,9 +74,10 @@ export const server_createVault = async ({
   isPrivate: boolean;
   vaultPassword: string;
 }) => {
-  const { userId } = auth();
+  const session = await auth();
+  const userId = session?.user.userId;
   const db = getFirestore(firebase_app);
-  await server_handleUser();
+
   const userRef = doc(db, "users", userId!);
 
   const userSnap = await getDoc(userRef);
@@ -151,7 +153,8 @@ export const server_uploadFile = async (
   formData: FormData,
   vaultId: string
 ) => {
-  const { userId } = auth();
+  const session = await auth();
+  const userId = session?.user.userId;
   const storage = getStorage(firebase_app);
 
   try {
@@ -214,7 +217,8 @@ export const server_checkIfVaultExists = async (vaultId: string) => {
 };
 
 export const server_uploadHTML = async (text: string, vaultId: string) => {
-  const { userId } = auth();
+  const session = await auth();
+  const userId = session?.user.userId;
   const storage = getStorage(firebase_app);
 
   try {
@@ -250,7 +254,8 @@ export const server_deleteVault = async (vaultId: string) => {
     const vaultRef = doc(db, "vaults", vaultId);
     await deleteDoc(vaultRef);
     revalidatePath("/dashboard");
-    const { userId } = auth();
+    const session = await auth();
+    const userId = session?.user.userId;
     const userRef = doc(db, "users", userId!);
     const userSnap = await getDoc(userRef);
     const userData = userSnap.data();
