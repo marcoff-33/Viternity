@@ -32,11 +32,11 @@ export default function Navbar() {
       } ${fullRenderInPath.includes(pathName) ? "sticky" : "relative"}`}
     >
       <div
-        className={`container w-full flex flex-col transition-all gap-5 duration-200 `}
+        className={`container w-full flex flex-col transition-all gap-0 duration-200 `}
       >
         <Link
           href="/"
-          className="md:text-4xl text-lg justify-center text-center items-center"
+          className="md:text-4xl text-lg justify-center text-center items-center py-2"
         >
           Viternity
         </Link>
@@ -65,6 +65,7 @@ export default function Navbar() {
           >
             Esempi
           </NavLink>
+          <ThemeToggle />
         </div>
       </div>
     </header>

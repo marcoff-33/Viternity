@@ -6,6 +6,11 @@ import { Button } from "./ui/button";
 import { useAnimation } from "framer-motion";
 import { input } from "zod";
 
+type ImageUrl = {
+  url: string;
+  description: string;
+};
+
 export type Vault = {
   id: string;
   plan: string;
@@ -16,6 +21,7 @@ export type Vault = {
   vaultText: string;
   vaultPassword: string;
   vaultTitle: string;
+  vaultTemplate: "Default" | "Text" | "Image";
 };
 
 export type dashboardInputMode = "Edit" | "Delete" | "Visit";

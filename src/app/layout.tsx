@@ -34,7 +34,7 @@ export default async function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen bg-backgroundfont-Serif antialiased relative",
+          "min-h-screen bg-background font-Serif antialiased relative",
           averiaSerifLibre.className
         )}
       >

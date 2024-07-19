@@ -27,6 +27,9 @@ import LikeCounter from "./LikeCounter";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
+import DefaultVault from "./DefaultVault";
+import TextOnlyVault from "./TextOnlyVault";
+import ImgOnlyVault from "./ImgOnlyVault";
 
 export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
@@ -133,95 +136,21 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
 
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
   return (
-    <div className="py-20 bg-background">
-      {otpIsCorrect ? (
-        <div className="flex justify-center flex-col w-full relative">
-          {isEditable ? (
-            <div className="container self-center flex justify-between pb-10">
-              <QrCodeModal />
-              <FileUploader
-                vaultId={vaultId}
-                onUploadSuccess={handleNewImage}
-              />
-            </div>
-          ) : (
-            <Link
-              href={`/edit/${vaultId}`}
-              className="self-end lg:pr-20 text-center items-center font-semibold sm:text-lg relative bg-transparent text-primary max-w-fit "
-            >
-              Edit
-            </Link>
-          )}
-          {vaultData && (
-            <div className="self-center items-center flex justify-center flex-col gap-2 w-full">
-              <ImagesCarousel
-                vaultImages={vaultData!.imageUrls}
-                vaultId={vaultId}
-                onImageDelete={handleNewImage}
-                isEditable={isEditable}
-              />
-
-              <div className="text-center items-center text-4xl font-medium px-10 pb-10 pt-5 border-b border-border flex flex-col min-w-full justify-center gap-5">
-                {!isEditable ? (
-                  <div className="text-foreground">{vaultData.vaultTitle}</div>
-                ) : (
-                  <div className="">
-                    {!showTitleEditor ? (
-                      <div
-                        className="text-foreground flex flex-col lg:flex-row justify-center items-center gap-5"
-                        onClick={() => setShowTitleEditor(true)}
-                      >
-                        {vaultData.vaultTitle}
-                        <div className="text-sm font-light text-foreground">
-                          <CiEdit size={30} />
-                        </div>
-                      </div>
-                    ) : (
-                      <form onSubmit={handleUpdateTitle}>
-                        <Input
-                          placeholder="Add a new Name / Title"
-                          className="text-2xl border-muted border"
-                          onChange={(e) => setVaultTitle(e.target.value)}
-                          autoFocus
-                        />
-                        <div className="flex flex-row justify-center gap-2 p-2">
-                          <div
-                            className="text-sm font-light flex justify-center items-center border border-border rounded-lg py-2 px-5"
-                            onClick={() => setShowTitleEditor(false)}
-                          >
-                            <p>Cancel</p>
-                          </div>
-                          <Button className="" type="submit" id="submit">
-                            Save
-                          </Button>
-                        </div>
-                      </form>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-          <div className="relative py-10 flex flex-col justify-center items-center gap-5 w-full">
-            {loadEditor && vaultText && (
-              <TextEditor
-                editable={isEditable}
-                vaultText={vaultText}
-                vaultId={vaultId}
-              />
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="flex justify-center items-center">
-          {vaultData && isEditable && (
-            <OtpInput
-              vaultPassword={vaultData!.vaultPassword}
-              setOtpIsCorrect={setOtpIsCorrect}
-            />
-          )}
-        </div>
-      )}
+    <div className="bg-background">
+      <ImgOnlyVault
+        otpIsCorrect={otpIsCorrect}
+        isEditable={isEditable}
+        vaultData={vaultData}
+        vaultId={vaultId}
+        handleNewImage={handleNewImage}
+        handleUpdateTitle={handleUpdateTitle}
+        setOtpIsCorrect={setOtpIsCorrect}
+        setShowTitleEditor={setShowTitleEditor}
+        showTitleEditor={showTitleEditor}
+        loadEditor={loadEditor}
+        vaultText={vaultText}
+        setVaultTitle={setVaultTitle}
+      />
     </div>
   );
 }

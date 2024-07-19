@@ -28,6 +28,7 @@ import {
 import { url } from "inspector";
 import { revalidatePath } from "next/cache";
 import { auth } from "./auth";
+import VaultTemplate from "@/components/VaultTemplate";
 
 export const server_handleNewUser = async (userId: string) => {
   const db = getFirestore(firebase_app);
@@ -111,6 +112,7 @@ export const server_createVault = async ({
         isPrivate,
         vaultPassword,
         vaultTitle: "",
+        VaultTemplate: "Default",
       },
       { merge: true }
     );
@@ -190,7 +192,10 @@ const server_addLinkToVault = async (vaultId: string, downloadURL: string) => {
   const db = getFirestore(firebase_app);
   const vaultRef = doc(db, "vaults", vaultId);
   await updateDoc(vaultRef, {
-    imageUrls: arrayUnion(downloadURL),
+    imageUrls: arrayUnion({
+      url: downloadURL,
+      description: "",
+    }),
   });
 };
 

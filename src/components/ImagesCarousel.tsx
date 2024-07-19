@@ -94,7 +94,7 @@ export function ImagesCarousel({
                 />
               </>
             ) : (
-              <div className="w-full h-full flex justify-center items-center rounded-3xl bg-gradient-to-b from-background via-border to-primary border border-border"></div>
+              <div className="w-full h-full flex justify-center items-center rounded-3xl bg-gradient-to-b from-background to-border border border-border"></div>
             )}
           </AspectRatio>
           <div className="flex flex-row justify-center py-2">
