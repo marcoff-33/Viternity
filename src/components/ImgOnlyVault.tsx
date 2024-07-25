@@ -163,6 +163,7 @@ function ImageGrid({
     <div className="grid grid-cols-1 md:grid-cols-2  gap-4 items-center">
       {imageUrls.map((url, index) => (
         <div
+          key={index}
           className={`self-start flex justify-center flex-col pb-14 ${
             index % 2 === 0 ? "col-2" : "col-1"
           }`}
