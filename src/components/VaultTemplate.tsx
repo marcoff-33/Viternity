@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import React, { use, useEffect, useState } from "react";
-import { Vault } from "./UserVaults";
+import { Vault, vaultTemplate } from "./UserVaults";
 import {
   server_formatImageUrl,
   server_getVaultData,
@@ -33,7 +33,7 @@ import ImgOnlyVault from "./ImgOnlyVault";
 
 export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
-  const [vaultText, setVaultText] = useState<string | undefined>("<p></p>");
+  const [vaultText, setVaultText] = useState<string | undefined>(undefined);
   const [loadEditor, setLoadEditor] = useState<boolean>(false);
   const pathName = usePathname();
   const [otpIsCorrect, setOtpIsCorrect] = useState<boolean>(
@@ -43,6 +43,13 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
     vaultData?.vaultTitle || ""
   );
   const [showTitleEditor, setShowTitleEditor] = useState<boolean>(false);
+  const [vaultTemplate, setVaultTemplate] = useState<vaultTemplate>("Default");
+
+  // this is to keep track of text editor content after a user saves, in case of unmounting and remounting a template
+  // otherwise the content will be the outdated fetched HTML page text.
+  //
+  const [newContent, setNewContent] = useState<string | undefined>(undefined);
+
   const { toast } = useToast();
   const { setTheme } = useTheme();
 
@@ -54,6 +61,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   };
   const loadVaultText = async () => {
     if (vaultData && vaultData.vaultText) {
+      console.log(vaultData.vaultText);
       const text = await server_getVaultTextContent(vaultData.vaultText);
       setVaultText(text);
     }
@@ -61,6 +69,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
 
   useEffect(() => {
     handleFirstLoad();
+    console.log("first load");
   }, []);
 
   useEffect(() => {
@@ -68,6 +77,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
       loadVaultText();
       setLoadEditor(true);
       console.log("loaded", vaultData, vaultId);
+      console.log(loadEditor);
     }
   }, [vaultData]);
 
@@ -99,10 +109,11 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
     }
   };
 
-  // callback for the file uploader to updte the carousel images
+  // callback for the file uploader to updte the carousel images state.
   const handleNewImage = async (
     newImageUrl: string,
-    action: "add" | "remove"
+    action: "add" | "remove",
+    index?: number
   ) => {
     const cdnImageUrl = await server_formatImageUrl(
       newImageUrl,
@@ -110,47 +121,109 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
     );
     if (vaultData)
       try {
-        action === "add"
-          ? (setVaultData({
-              ...vaultData,
-              imageUrls: [...vaultData.imageUrls, cdnImageUrl],
-            }),
-            toast({
-              title: "Success",
-              description: "Your new Images has been added",
-            }))
-          : (setVaultData({
-              ...vaultData,
-              imageUrls: vaultData.imageUrls.filter(
-                (url) => url !== cdnImageUrl
-              ),
-            }),
-            toast({
-              title: "Success",
-              description: "Your image has been removed",
-            }));
+        if (action === "add") {
+          setVaultData({
+            ...vaultData,
+            imageUrls: [...vaultData.imageUrls, cdnImageUrl],
+            imageDescriptions: [
+              ...vaultData.imageDescriptions,
+              "Edit Description",
+            ],
+          });
+          toast({
+            title: "Success",
+            description: "Your new Images has been added",
+          });
+        } else if (action === "remove") {
+          const newImageUrls = vaultData.imageUrls.filter(
+            (url) => url !== cdnImageUrl
+          );
+          const newImageDescriptions = [...vaultData.imageDescriptions];
+          if (typeof index === "number") {
+            newImageDescriptions.splice(index, 1);
+          }
+          setVaultData({
+            ...vaultData,
+            imageUrls: newImageUrls,
+            imageDescriptions: newImageDescriptions,
+          });
+          toast({
+            title: "Success",
+            description: "Your image has been removed",
+          });
+        }
       } catch (error) {
         toast({ title: "Error", description: `${error}` });
       }
   };
 
   const vaultId = pathName.split("/")[pathName.split("/").length - 1];
+
   return (
     <div className="bg-background">
-      <ImgOnlyVault
-        otpIsCorrect={otpIsCorrect}
-        isEditable={isEditable}
-        vaultData={vaultData}
-        vaultId={vaultId}
-        handleNewImage={handleNewImage}
-        handleUpdateTitle={handleUpdateTitle}
-        setOtpIsCorrect={setOtpIsCorrect}
-        setShowTitleEditor={setShowTitleEditor}
-        showTitleEditor={showTitleEditor}
-        loadEditor={loadEditor}
-        vaultText={vaultText}
-        setVaultTitle={setVaultTitle}
-      />
+      <div className="border">
+        <div className="">Display Template:</div>
+        <div className="flex flex-row gap-2">
+          <button onClick={() => setVaultTemplate("Default")}>Default</button>
+          <button onClick={() => setVaultTemplate("Text only")}>
+            Text only
+          </button>
+          <button onClick={() => setVaultTemplate("Images")}>Images</button>
+        </div>
+      </div>
+      {vaultTemplate === "Text only" ? (
+        <TextOnlyVault
+          otpIsCorrect={otpIsCorrect}
+          isEditable={isEditable}
+          vaultData={vaultData}
+          vaultId={vaultId}
+          handleNewImage={handleNewImage}
+          handleUpdateTitle={handleUpdateTitle}
+          setOtpIsCorrect={setOtpIsCorrect}
+          setShowTitleEditor={setShowTitleEditor}
+          showTitleEditor={showTitleEditor}
+          loadEditor={loadEditor}
+          vaultText={vaultText}
+          setVaultTitle={setVaultTitle}
+          setVaultData={setVaultData}
+          newContent={newContent}
+          setNewContent={setNewContent}
+        />
+      ) : vaultTemplate === "Images" ? (
+        <ImgOnlyVault
+          otpIsCorrect={otpIsCorrect}
+          isEditable={isEditable}
+          vaultData={vaultData}
+          vaultId={vaultId}
+          handleNewImage={handleNewImage}
+          handleUpdateTitle={handleUpdateTitle}
+          setOtpIsCorrect={setOtpIsCorrect}
+          setShowTitleEditor={setShowTitleEditor}
+          showTitleEditor={showTitleEditor}
+          loadEditor={loadEditor}
+          vaultText={vaultText}
+          setVaultTitle={setVaultTitle}
+          setVaultData={setVaultData}
+        />
+      ) : (
+        <DefaultVault
+          otpIsCorrect={otpIsCorrect}
+          isEditable={isEditable}
+          vaultData={vaultData}
+          vaultId={vaultId}
+          handleNewImage={handleNewImage}
+          handleUpdateTitle={handleUpdateTitle}
+          setOtpIsCorrect={setOtpIsCorrect}
+          setShowTitleEditor={setShowTitleEditor}
+          showTitleEditor={showTitleEditor}
+          loadEditor={loadEditor}
+          vaultText={vaultText}
+          setVaultTitle={setVaultTitle}
+          setVaultData={setVaultData}
+          newContent={newContent}
+          setNewContent={setNewContent}
+        />
+      )}
     </div>
   );
 }

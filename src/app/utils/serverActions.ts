@@ -113,6 +113,7 @@ export const server_createVault = async ({
         vaultPassword,
         vaultTitle: "",
         VaultTemplate: "Default",
+        imageDescriptions: [],
       },
       { merge: true }
     );
@@ -191,11 +192,13 @@ export const server_uploadFile = async (
 const server_addLinkToVault = async (vaultId: string, downloadURL: string) => {
   const db = getFirestore(firebase_app);
   const vaultRef = doc(db, "vaults", vaultId);
+  const imageId = new Date();
+
   await updateDoc(vaultRef, {
-    imageUrls: arrayUnion({
-      url: downloadURL,
-      description: "",
-    }),
+    imageDescriptions: arrayUnion(
+      "added " + imageId + " (click to edit description)"
+    ),
+    imageUrls: arrayUnion(downloadURL),
   });
 };
 
@@ -208,6 +211,28 @@ const server_addTextLinkToVault = async (
   await updateDoc(vaultRef, {
     vaultText: downloadURL,
   });
+};
+
+export const server_addDescriptionToImage = async (
+  vaultId: string,
+  text: string,
+  index: number
+) => {
+  const db = getFirestore(firebase_app);
+  const vaultRef = doc(db, "vaults", vaultId);
+  // pretty sure you can't update an array at a given index in firestore, so we mutate the entire thing and update it
+  const docSnap = await getDoc(vaultRef);
+
+  if (docSnap.exists()) {
+    const imageDescriptions = docSnap.data().imageDescriptions;
+    console.log(imageDescriptions);
+    imageDescriptions[index] = text;
+    await updateDoc(vaultRef, {
+      imageDescriptions: imageDescriptions,
+    });
+  } else {
+    console.log("Failed to update image description");
+  }
 };
 
 export const server_checkIfVaultExists = async (vaultId: string) => {
@@ -271,12 +296,16 @@ export const server_deleteVault = async (vaultId: string) => {
   }
 };
 
-export const server_deleteFile = async (fileUrl: string, vaultId: string) => {
+export const server_deleteFile = async (
+  fileUrl: string,
+  vaultId: string,
+  index: number
+) => {
   try {
     const storage = getStorage(firebase_app);
     const storageRef = ref(storage, fileUrl);
     await deleteObject(storageRef);
-    await server_removeLinkToVault(vaultId, fileUrl);
+    await server_removeLinkToVault(vaultId, fileUrl, index);
   } catch (error) {
     console.log(error);
   }
@@ -284,13 +313,24 @@ export const server_deleteFile = async (fileUrl: string, vaultId: string) => {
 
 const server_removeLinkToVault = async (
   vaultId: string,
-  downloadURL: string
+  downloadURL: string,
+  index: number
 ) => {
   const db = getFirestore(firebase_app);
   const vaultRef = doc(db, "vaults", vaultId);
-  await updateDoc(vaultRef, {
-    imageUrls: arrayRemove(downloadURL),
-  });
+
+  const vaultSnap = await getDoc(vaultRef);
+
+  if (vaultSnap.exists()) {
+    const imageDescriptions = vaultSnap.data().imageDescriptions;
+
+    imageDescriptions.splice(index, 1);
+
+    await updateDoc(vaultRef, {
+      imageUrls: arrayRemove(downloadURL),
+      imageDescriptions: imageDescriptions,
+    });
+  }
 };
 
 export const server_formatImageUrl = async (

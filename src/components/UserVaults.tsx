@@ -11,6 +11,7 @@ type ImageUrl = {
   description: string;
 };
 
+export type vaultTemplate = "Default" | "Text only" | "Images";
 export type Vault = {
   id: string;
   plan: string;
@@ -21,7 +22,8 @@ export type Vault = {
   vaultText: string;
   vaultPassword: string;
   vaultTitle: string;
-  vaultTemplate: "Default" | "Text" | "Image";
+  vaultTemplate: vaultTemplate;
+  imageDescriptions: string[];
 };
 
 export type dashboardInputMode = "Edit" | "Delete" | "Visit";

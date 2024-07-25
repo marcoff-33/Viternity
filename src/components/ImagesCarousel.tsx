@@ -38,7 +38,11 @@ export function ImagesCarousel({
 }: {
   vaultImages: string[];
   vaultId: string;
-  onImageDelete?: (imageUrl: string, action: "add" | "remove") => void;
+  onImageDelete?: (
+    imageUrl: string,
+    action: "add" | "remove",
+    index: number
+  ) => void;
   isEditable: boolean;
   isDecorative?: boolean;
   isDisabled?: boolean;
@@ -59,14 +63,14 @@ export function ImagesCarousel({
     });
   }, [vaultImages, api]);
 
-  const handleDelete = async (imageUrl: string) => {
+  const handleDelete = async (imageUrl: string, index: number) => {
     const dbUrl = await server_formatImageUrl(imageUrl, "from cdn to storage");
     setIsProcessing(true);
-    await server_deleteFile(dbUrl, vaultId);
-    setIsProcessing(false);
+    await server_deleteFile(dbUrl, vaultId, index);
     api?.scrollPrev();
+    setIsProcessing(false);
     setTimeout(() => {
-      onImageDelete!(imageUrl, "remove");
+      onImageDelete!(imageUrl, "remove", index);
     }, 800);
   };
 
@@ -128,7 +132,7 @@ export function ImagesCarousel({
                       {isEditable && (
                         <div
                           className="cursor-pointer absolute bottom-5 right-5 py-4 px-8 bg-accent-foreground/80 backdrop-blur-md text-destructive rounded-full"
-                          onClick={() => handleDelete(image)}
+                          onClick={() => handleDelete(image, index)}
                           key={index}
                         >
                           <FaTrashAlt />

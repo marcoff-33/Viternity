@@ -27,6 +27,7 @@ import { server_uploadHTML } from "@/app/utils/serverActions";
 import { set } from "zod";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Vault } from "./UserVaults";
 
 const buttonStyles =
   "hover:bg-muted/80 border transition-all px-3 py-2 rounded-md duration-300 text-center items-center";
@@ -37,12 +38,14 @@ const MenuBar = ({
   vaultId,
   allowSave,
   setAllowSave,
+  setNewContent,
 }: {
   editor: Editor;
   content: string;
   vaultId: string;
   allowSave: boolean;
   setAllowSave: (value: boolean) => void;
+  setNewContent: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   if (!editor) {
@@ -54,6 +57,7 @@ const MenuBar = ({
     await server_uploadHTML(content, vaultId);
     setAllowSave(false);
     setIsProcessing(false);
+    setNewContent(content);
   };
 
   return (
@@ -233,12 +237,17 @@ const TextEditor = ({
   editable,
   vaultText,
   vaultId,
+  newContent, // this is to keep the state of the new content after a user saves in case of unmounting
+  setNewContent,
 }: {
   editable: boolean;
   vaultText: string;
   vaultId: string;
+  newContent?: string;
+  setNewContent: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
-  const [content, setContent] = useState(vaultText); // Initial HTML
+  // editor content is initially the fetched HTML, after saving it is put into state in case of unmounting and remounting
+  const [content, setContent] = useState(newContent ? newContent : vaultText);
 
   const [allowSave, setAllowSave] = useState(false);
 
@@ -254,8 +263,8 @@ const TextEditor = ({
 
   useEffect(() => {
     if (editor) {
-      editor.commands.setContent(vaultText);
-      console.log("set content", editor);
+      editor.commands.setContent(newContent ? newContent : vaultText);
+      console.log("set content", editor, newContent);
     }
   }, [vaultText, editor]);
 
@@ -269,6 +278,7 @@ const TextEditor = ({
             vaultId={vaultId}
             allowSave={allowSave}
             setAllowSave={setAllowSave}
+            setNewContent={setNewContent}
           />
           <MenuBarDesktop
             content={content}
@@ -276,6 +286,7 @@ const TextEditor = ({
             vaultId={vaultId}
             allowSave={allowSave}
             setAllowSave={setAllowSave}
+            setNewContent={setNewContent}
           />
         </>
       )}
@@ -305,12 +316,14 @@ const MenuBarDesktop = ({
   vaultId,
   allowSave,
   setAllowSave,
+  setNewContent,
 }: {
   editor: Editor;
   content: string;
   vaultId: string;
   allowSave: boolean;
   setAllowSave: (value: boolean) => void;
+  setNewContent: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   if (!editor) {
@@ -322,6 +335,7 @@ const MenuBarDesktop = ({
     await server_uploadHTML(content, vaultId);
     setAllowSave(false);
     setIsProcessing(false);
+    setNewContent(content);
   };
 
   return (

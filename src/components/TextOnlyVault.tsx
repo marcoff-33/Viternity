@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Vault } from "./UserVaults";
 import QrCodeModal from "./QrCodeModal";
 import FileUploader from "./fileUploader";
@@ -10,7 +10,7 @@ import { Button } from "./ui/button";
 import TextEditor from "./TipTap";
 import OtpInput from "./OtpInput";
 
-export default function DefaultVault({
+export default function TextOnlyVault({
   otpIsCorrect,
   isEditable,
   vaultData,
@@ -23,6 +23,9 @@ export default function DefaultVault({
   loadEditor,
   vaultText,
   setVaultTitle,
+  setVaultData,
+  newContent,
+  setNewContent,
 }: {
   otpIsCorrect: boolean;
   isEditable: boolean;
@@ -39,6 +42,9 @@ export default function DefaultVault({
   loadEditor: boolean;
   vaultText: string | undefined;
   setVaultTitle: (vaultTitle: string) => void;
+  setVaultData: React.Dispatch<React.SetStateAction<Vault | undefined>>;
+  newContent: string | undefined;
+  setNewContent: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) {
   return (
     <>
@@ -109,6 +115,8 @@ export default function DefaultVault({
                 editable={isEditable}
                 vaultText={vaultText}
                 vaultId={vaultId}
+                newContent={newContent}
+                setNewContent={setNewContent}
               />
             )}
           </div>
