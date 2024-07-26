@@ -5,6 +5,9 @@ import { ThemeToggle } from "./themeToggle";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GiCardJackHearts } from "react-icons/gi";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,6 +25,9 @@ export default function Navbar() {
     };
   }, []);
   const fullRenderInPath = ["/faq", "/pricing", "/examples", "/"];
+
+  const session = useSession();
+  console.log(session);
 
   return (
     <header
@@ -42,30 +48,55 @@ export default function Navbar() {
         </Link>
 
         <div
-          className={`bg-background grow flex border rounded-[2px] shadow-md   transition-all duration-200 justify-center ${
+          className={`grow flex rounded-[2px] transition-all duration-200 justify-center ${
             isScrolled && fullRenderInPath.includes(pathName)
-              ? "shadow-black border-border"
-              : "shadow-transparent border-transparent"
+              ? "border-border"
+              : "border-transparent"
           } ${fullRenderInPath.includes(pathName) ? "flex" : "hidden"}`}
         >
-          <NavLink href="/faq" isScrolled={isScrolled} currentPath={pathName}>
-            Dashboard
-          </NavLink>
-          <NavLink
-            href="/pricing"
-            isScrolled={isScrolled}
-            currentPath={pathName}
+          <div className="w-[50px] h-[50px] "></div>
+          <div
+            className={`flex flex-row w-full shadow-lg transition-all duration-200 justify-center ${
+              isScrolled && fullRenderInPath.includes(pathName)
+                ? "shadow-black border-border"
+                : "shadow-transparent border-transparent"
+            }`}
           >
-            Prezzi
-          </NavLink>
-          <NavLink
-            href="/examples"
-            isScrolled={isScrolled}
-            currentPath={pathName}
-          >
-            Esempi
-          </NavLink>
-          <ThemeToggle />
+            <NavLink href="/faq" isScrolled={isScrolled} currentPath={pathName}>
+              Dashboard
+            </NavLink>
+            <NavLink
+              href="/pricing"
+              isScrolled={isScrolled}
+              currentPath={pathName}
+            >
+              Prezzi
+            </NavLink>
+            <NavLink
+              href="/examples"
+              isScrolled={isScrolled}
+              currentPath={pathName}
+            >
+              Esempi
+            </NavLink>
+          </div>
+          <Popover>
+            <PopoverTrigger className="" disabled={!session.data?.user}>
+              <div className="w-[50px] h-[50px]">
+                <img
+                  src={session.data?.user.image || ""}
+                  alt=""
+                  className={`w-full h-full bg-gradient-to-br from-primary to-secondary rounded-full ${
+                    session.data?.user ? "block" : "invisible"
+                  }`}
+                />
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="z-[5000] flex flex-col gap-2 justify-center">
+              <div className="">{session.data?.user?.name}</div>
+              <Button onClick={() => signOut()}>SignOut</Button>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </header>
@@ -86,10 +117,10 @@ export const NavLink = ({
   return (
     <Link
       href={href}
-      className={`px-5 py-1 last:border-none first:rounded-l-[2px] last:rounded-r-[1px] border-r border-border transition-all duration-200 flex-col basis-1/3 text-center items-center flex justify-center ${
+      className={`px-5 py-1  first:rounded-l-[2px] last:rounded-r-[1px] border-x border-border transition-all duration-200 flex-col basis-1/3 text-center items-center flex justify-center ${
         currentPath === href
           ? "bg-primary text-primary-foreground"
-          : "bg-transparent"
+          : "bg-background"
       }`}
     >
       <div className="md:text-lg text-sm font-thin text-nowrap">{children}</div>
