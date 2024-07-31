@@ -30,11 +30,17 @@ import { useTheme } from "next-themes";
 import DefaultVault from "./DefaultVault";
 import TextOnlyVault from "./TextOnlyVault";
 import ImgOnlyVault from "./ImgOnlyVault";
+import TemplateSwitcher from "./TemplateSwitcher";
+
+// TODO !!!! implement file deletion when deleting a vault
 
 export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
   const [vaultText, setVaultText] = useState<string | undefined>(undefined);
   const [loadEditor, setLoadEditor] = useState<boolean>(false);
+  const [currentTemplate, setCurrentTemplate] = useState<vaultTemplate>(
+    vaultData?.vaultTemplate || "Default"
+  );
   const pathName = usePathname();
   const [otpIsCorrect, setOtpIsCorrect] = useState<boolean>(
     pathName.includes("edit") ? false : true
@@ -43,7 +49,6 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
     vaultData?.vaultTitle || ""
   );
   const [showTitleEditor, setShowTitleEditor] = useState<boolean>(false);
-  const [vaultTemplate, setVaultTemplate] = useState<vaultTemplate>("Default");
 
   // this is to keep track of text editor content after a user saves, in case of unmounting and remounting a template
   // otherwise the content will be the outdated fetched HTML page text.
@@ -58,6 +63,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
     setVaultData(data);
     setVaultTitle(data.vaultTitle);
     setTheme(data.style);
+    setCurrentTemplate(data.vaultTemplate);
   };
   const loadVaultText = async () => {
     if (vaultData && vaultData.vaultText) {
@@ -161,17 +167,16 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
 
   return (
     <div className="bg-background">
-      <div className="border">
-        <div className="">Display Template:</div>
-        <div className="flex flex-row gap-2">
-          <button onClick={() => setVaultTemplate("Default")}>Default</button>
-          <button onClick={() => setVaultTemplate("Text only")}>
-            Text only
-          </button>
-          <button onClick={() => setVaultTemplate("Images")}>Images</button>
+      {isEditable && otpIsCorrect && (
+        <div className="pb-4 pt-9 self-center text-center items-center">
+          <TemplateSwitcher
+            currentTemplate={currentTemplate}
+            setCurrentTemplate={setCurrentTemplate}
+            vaultId={vaultId}
+          />
         </div>
-      </div>
-      {vaultTemplate === "Text only" ? (
+      )}
+      {currentTemplate === "Text only" ? (
         <TextOnlyVault
           otpIsCorrect={otpIsCorrect}
           isEditable={isEditable}
@@ -189,7 +194,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
           newContent={newContent}
           setNewContent={setNewContent}
         />
-      ) : vaultTemplate === "Images" ? (
+      ) : currentTemplate === "Images" ? (
         <ImgOnlyVault
           otpIsCorrect={otpIsCorrect}
           isEditable={isEditable}

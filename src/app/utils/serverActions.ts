@@ -17,7 +17,7 @@ import {
   deleteDoc,
   arrayRemove,
 } from "firebase/firestore";
-import { Vault } from "../../components/UserVaults";
+import { Vault, vaultTemplate } from "../../components/UserVaults";
 import {
   deleteObject,
   getDownloadURL,
@@ -112,7 +112,7 @@ export const server_createVault = async ({
         isPrivate,
         vaultPassword,
         vaultTitle: "",
-        VaultTemplate: "Default",
+        vaultTemplate: "Default",
         imageDescriptions: [],
       },
       { merge: true }
@@ -358,5 +358,16 @@ export const server_updateVaultTitle = async (
   const vaultRef = doc(db, "vaults", vaultId);
   await updateDoc(vaultRef, {
     vaultTitle: newTitle,
+  });
+};
+
+export const server_updateVaultTemplate = async (
+  vaultId: string,
+  newTemplate: vaultTemplate
+) => {
+  const db = getFirestore(firebase_app);
+  const vaultRef = doc(db, "vaults", vaultId);
+  await updateDoc(vaultRef, {
+    vaultTemplate: newTemplate,
   });
 };
