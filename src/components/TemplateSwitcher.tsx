@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import {
@@ -9,11 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "./ui/dialog";
 import { vaultTemplate } from "./UserVaults";
 import { Button } from "./ui/button";
 import { toast } from "./ui/use-toast";
 import { server_updateVaultTemplate } from "@/app/utils/serverActions";
+
 export default function TemplateSwitcher({
   currentTemplate,
   setCurrentTemplate,
@@ -23,11 +25,15 @@ export default function TemplateSwitcher({
   setCurrentTemplate: React.Dispatch<React.SetStateAction<vaultTemplate>>;
   vaultId: string;
 }) {
+  const [allowSave, setAllowSave] = useState(false);
+  const [originalTemplate, setOriginalTemplate] = useState(currentTemplate);
   const templateOptions: vaultTemplate[] = ["Default", "Text only", "Images"];
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await server_updateVaultTemplate(vaultId, currentTemplate);
+      setOriginalTemplate(currentTemplate);
+      setAllowSave(false);
       toast({
         title: "Success",
         description: "Template updated successfully",
@@ -41,22 +47,44 @@ export default function TemplateSwitcher({
       });
     }
   };
+  const handleValueChange = (value: vaultTemplate) => {
+    setCurrentTemplate(value);
+  };
   return (
     <Dialog>
       <DialogTrigger className="text-primary text-xl">
         Advanced Options
       </DialogTrigger>
-      <DialogContent closeButton={false}>
-        <form onSubmit={handleSubmit}>
+      <DialogContent closeButton={false} className="p-5 flex justify-center ">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <div className="">Select a template</div>
           <RadioGroup
             defaultValue={currentTemplate}
-            onValueChange={(value: vaultTemplate) => setCurrentTemplate(value)}
+            onValueChange={(value: vaultTemplate) => handleValueChange(value)}
+            className=""
           >
             {templateOptions.map((template, i) => (
               <RadioItem value={template} id={`option-${i}`} key={i} />
             ))}
           </RadioGroup>
-          <Button type="submit">Save</Button>
+          <DialogFooter>
+            <Button
+              type="submit"
+              disabled={originalTemplate === currentTemplate}
+              className={` ${
+                originalTemplate === currentTemplate
+                  ? "bg-muted text-muted-foreground"
+                  : "bg-primary"
+              }`}
+            >
+              Save Template
+            </Button>
+            <DialogClose className="flex flex-row gap-2 items-center">
+              <Button type="button" variant={"secondary"}>
+                Cancel
+              </Button>
+            </DialogClose>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
@@ -65,8 +93,8 @@ export default function TemplateSwitcher({
 
 const RadioItem = ({ value, id }: { value: string; id: string }) => {
   return (
-    <div className="flex items-center space-x-2">
-      <RadioGroupItem value={value} id={id} />
+    <div className="flex items-center space-x-2 py-2">
+      <RadioGroupItem value={value} id={id} className="h-5 w-5" />
       <Label htmlFor={id}>{value}</Label>
     </div>
   );
