@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Vault } from "./UserVaults";
 import QrCodeModal from "./QrCodeModal";
 import FileUploader from "./fileUploader";
@@ -11,7 +11,11 @@ import TextEditor from "./TipTap";
 import OtpInput from "./OtpInput";
 
 import { AspectRatio } from "./ui/aspect-ratio";
-import { server_addDescriptionToImage } from "@/app/utils/serverActions";
+import {
+  server_addDescriptionToImage,
+  server_deleteFile,
+  server_formatImageUrl,
+} from "@/app/utils/serverActions";
 import { Textarea } from "./ui/textarea";
 import { toast } from "./ui/use-toast";
 import { set, z } from "zod";
@@ -117,6 +121,8 @@ export default function ImageOnlyVault({
               imageUrls={vaultData!.imageUrls}
               imageDescriptions={vaultData!.imageDescriptions}
               setVaultData={setVaultData}
+              vaultId={vaultId}
+              handleNewImage={handleNewImage}
             />
           </div>
         </div>
@@ -139,24 +145,55 @@ function ImageGrid({
   imageUrls,
   imageDescriptions,
   setVaultData,
+  vaultId,
+  handleNewImage,
 }: {
   imageUrls: string[];
   imageDescriptions: string[];
   setVaultData: React.Dispatch<React.SetStateAction<Vault | undefined>>;
+  vaultId: string;
+  handleNewImage: (
+    newImageUrl: string,
+    action: "add" | "remove",
+    index: number
+  ) => Promise<void>;
 }) {
   const [currentImageDescriptions, setCurrentImageDescriptions] =
     useState<string[]>(imageDescriptions);
 
-  const handleNewDescription = async (
-    vaultId: string,
-    newDescription: string,
-    index: number
-  ) => {
-    await server_addDescriptionToImage(
-      "ZDNTqdkUE6fQWiSSv0zC",
-      newDescription,
-      index
-    );
+  const handleDelete = async (imageUrl: string, index: number) => {
+    try {
+      const dbUrl = await server_formatImageUrl(
+        imageUrl,
+        "from cdn to storage"
+      );
+      await server_deleteFile(dbUrl, vaultId, index);
+      handleNewImage(imageUrl, "remove", index);
+      const newImageUrls = [...imageUrls.splice(index, 1)];
+      const newImageDescriptions = [...imageDescriptions.splice(index, 1)];
+      setVaultData((prevData) => {
+        if (!prevData) {
+          console.error("Vault data is undefined");
+          return prevData;
+        }
+        return {
+          ...prevData,
+          imageUrls: newImageUrls,
+          imageDescriptions: newImageDescriptions,
+        };
+      });
+      toast({
+        title: "Success",
+        description: "Image deleted successfully",
+        variant: "successful",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to delete image",
+        description: "Please try again or refresh the page",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -180,7 +217,14 @@ function ImageGrid({
               index={index}
               setVaultData={setVaultData}
               key={index}
+              vaultId={vaultId}
             />
+            <Button
+              variant={"destructive"}
+              onClick={() => handleDelete(url, index)}
+            >
+              Delete
+            </Button>
           </div>
         </div>
       ))}
@@ -192,10 +236,12 @@ function ImageDescription({
   description,
   index,
   setVaultData,
+  vaultId,
 }: {
   description: string;
   index: number;
   setVaultData: React.Dispatch<React.SetStateAction<Vault | undefined>>;
+  vaultId: string;
 }) {
   const [isEditable, setIsEditable] = useState<boolean>(false);
 
@@ -231,11 +277,7 @@ function ImageDescription({
       return;
     }
     try {
-      await server_addDescriptionToImage(
-        "ZDNTqdkUE6fQWiSSv0zC",
-        newDescription,
-        index
-      );
+      await server_addDescriptionToImage(vaultId, newDescription, index);
       setVaultData((prevData) => {
         if (!prevData) {
           console.error("Vault data is undefined");
