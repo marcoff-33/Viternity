@@ -211,20 +211,16 @@ function ImageGrid({
             alt={`Image ${index + 1}`}
             className="w-full object-cover max-w-fit self-center grow rounded-md min-h-full min-w-full"
           />
-          <div className="cursor-pointer">
+          <div className="cursor-pointer pt-2">
             <ImageDescription
               description={imageDescriptions[index]}
               index={index}
               setVaultData={setVaultData}
               key={index}
               vaultId={vaultId}
+              handleDelete={handleDelete}
+              imageUrl={url}
             />
-            <Button
-              variant={"destructive"}
-              onClick={() => handleDelete(url, index)}
-            >
-              Delete
-            </Button>
           </div>
         </div>
       ))}
@@ -237,11 +233,15 @@ function ImageDescription({
   index,
   setVaultData,
   vaultId,
+  handleDelete,
+  imageUrl,
 }: {
   description: string;
   index: number;
   setVaultData: React.Dispatch<React.SetStateAction<Vault | undefined>>;
   vaultId: string;
+  handleDelete: (imageUrl: string, index: number) => Promise<void>;
+  imageUrl: string;
 }) {
   const [isEditable, setIsEditable] = useState<boolean>(false);
 
@@ -336,12 +336,20 @@ function ImageDescription({
           </div>
         </form>
       ) : (
-        <div
-          onClick={() => setIsEditable(true)}
-          className="text-xl pt-2 whitespace-pre-line"
-        >
-          {newDescription}
-        </div>
+        <>
+          <div
+            onClick={() => setIsEditable(true)}
+            className="text-xl pt-2 whitespace-pre-line"
+          >
+            {newDescription}
+          </div>
+          <Button
+            variant={"destructive"}
+            onClick={() => handleDelete(imageUrl, index)}
+          >
+            Delete
+          </Button>
+        </>
       )}
     </>
   );

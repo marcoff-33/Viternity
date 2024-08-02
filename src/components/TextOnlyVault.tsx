@@ -109,11 +109,11 @@ export default function TextOnlyVault({
               </div>
             </div>
           )}
-          <div className="relative py-10 flex flex-col justify-center items-center gap-5 w-full">
-            {loadEditor && vaultText && (
+          <div className="relative py-10 flex flex-col justify-center items-center gap-5 w-full h-full">
+            {loadEditor && (
               <TextEditor
                 editable={isEditable}
-                vaultText={vaultText}
+                vaultText={vaultText!}
                 vaultId={vaultId}
                 newContent={newContent}
                 setNewContent={setNewContent}

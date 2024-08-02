@@ -28,7 +28,10 @@ export default function vaultButton({
       ? "border-destructive"
       : "border-border";
   return (
-    <Button className="bg-background hover:bg-card text-foreground" asChild>
+    <Button
+      className="bg-background shadow-md shadow-shadow hover:bg-card text-foreground "
+      asChild
+    >
       {currentInputMode == "Visit" ? (
         <Link
           href={`/${vaultId}`}
@@ -39,7 +42,7 @@ export default function vaultButton({
       ) : currentInputMode == "Edit" ? (
         <Link
           href={`/edit/${vaultId}`}
-          className={`min-w-[100px] min-h-[50px] rounded-lg border text-center flex justify-center items-center text-foreground bg-card transiton-colors duration-300 ${borderColor}`}
+          className={`min-w-[100px] min-h-[50px] rounded-lg border text-center flex justify-center items-center text-foreground bg-background transiton-colors duration-300 ${borderColor}`}
         >
           {vaultName}
         </Link>
@@ -47,7 +50,7 @@ export default function vaultButton({
         <Dialog>
           <DialogTrigger>
             <div
-              className={`bg-background hover:bg-card text-foreground min-w-[100px] min-h-[50px] rounded-lg border text-center flex justify-center items-center transiton-colors duration-300 text-sm ${borderColor}`}
+              className={`shadow-md shadow-shadow bg-background hover:bg-card text-foreground min-w-[100px] min-h-[50px] rounded-lg border text-center flex justify-center items-center transiton-colors duration-300 text-sm ${borderColor}`}
             >
               {vaultName}
             </div>

@@ -35,14 +35,18 @@ export default function Navbar() {
         isScrolled && fullRenderInPath.includes(pathName)
           ? "md:py-5 bg-background/70"
           : "md:py-2 bg-background"
-      } ${fullRenderInPath.includes(pathName) ? "sticky" : "relative"}`}
+      } ${
+        fullRenderInPath.includes(pathName)
+          ? "sticky"
+          : "relative bg-transparent"
+      }`}
     >
       <div
         className={`container w-full flex flex-col transition-all gap-0 duration-200 `}
       >
         <Link
           href="/"
-          className="md:text-4xl text-lg justify-center text-center items-center py-2"
+          className="md:text-4xl max-w-fit text-lg justify-center text-center items-center py-2 self-center"
         >
           Viternity
         </Link>
@@ -82,14 +86,23 @@ export default function Navbar() {
           </div>
           <Popover>
             <PopoverTrigger className="" disabled={!session.data?.user}>
-              <div className="w-[50px] h-[50px]">
-                <img
-                  src={session.data?.user.image || ""}
-                  alt=""
-                  className={`w-full h-full bg-gradient-to-br from-primary to-secondary rounded-full ${
-                    session.data?.user ? "block" : "invisible"
-                  }`}
-                />
+              <div className="w-[40px] h-[40px] ml-5">
+                {session.data?.user ? (
+                  <img
+                    src={session.data?.user.image || ""}
+                    alt=""
+                    className={`w-full h-full bg-gradient-to-br from-primary to-secondary rounded-full shadow-md shadow-shadow ${
+                      session.data?.user ? "block" : "invisible"
+                    }`}
+                  />
+                ) : (
+                  <Button asChild>
+                    <Link
+                      className="w-full h-full bg-gradient-to-br from-background to-secondary rounded-full shadow-md shadow-shadow"
+                      href={"/dashboard"}
+                    ></Link>
+                  </Button>
+                )}
               </div>
             </PopoverTrigger>
             <PopoverContent className="z-[5000] flex flex-col gap-2 justify-center">

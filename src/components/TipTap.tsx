@@ -269,7 +269,7 @@ const TextEditor = ({
   }, [vaultText, editor]);
 
   return (
-    <div className="text-foreground relative max-w-[85vw] min-w-[85vw] md:max-w-2xl md:min-w-full ">
+    <div className="text-foreground relative max-w-[85vw] min-w-[85vw] md:max-w-2xl md:min-w-full">
       {editable && (
         <>
           <MenuBar
@@ -291,7 +291,7 @@ const TextEditor = ({
         </>
       )}
       <div
-        className={`text-foreground bg-card rounded-sm outline-none max-w-full p-5 ${
+        className={`text-foreground bg-secondary rounded-sm outline-none max-w-full p-5 ${
           editable && ""
         }`}
       >

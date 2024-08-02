@@ -35,7 +35,7 @@ export default function UserVaults({ vaults }: { vaults: Vault[] }) {
   return (
     <div className="flex flex-col gap-5 justify-center items-center">
       <div
-        className={`min-w-full items-center flex justify-around bg-background border-b border-border pb-5 transition-colors duration-500 ${
+        className={`min-w-full items-center flex justify-around bg-transparent border-b border-border pb-5 transition-colors duration-500 ${
           inputMode === "Delete" ? "border-destructive" : "border-border"
         } ${inputMode === "Edit" ? "border-primary" : "border-border"}`}
       >
@@ -118,7 +118,7 @@ export function InputButton({
       ? "bg-destructive"
       : buttonType == "Edit"
       ? "bg-primary"
-      : "bg-card";
+      : "bg-secondary";
   const textColor =
     buttonType == "Edit"
       ? "text-primary-foreground"
@@ -127,7 +127,7 @@ export function InputButton({
       : "text-foreground";
   const borderColor =
     buttonType == "Edit"
-      ? "border-primary"
+      ? "border-border"
       : buttonType == "Delete"
       ? "border-destructive"
       : "border-border";

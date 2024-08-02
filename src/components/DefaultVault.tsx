@@ -117,10 +117,10 @@ export default function DefaultVault({
             </div>
           )}
           <div className="relative py-10 flex flex-col justify-center items-center gap-5 w-full">
-            {loadEditor && vaultText && (
+            {loadEditor && (
               <TextEditor
                 editable={isEditable}
-                vaultText={vaultText}
+                vaultText={vaultText!}
                 vaultId={vaultId}
                 newContent={newContent}
                 setNewContent={setNewContent}

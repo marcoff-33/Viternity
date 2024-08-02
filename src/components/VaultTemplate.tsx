@@ -36,7 +36,7 @@ import TemplateSwitcher from "./TemplateSwitcher";
 
 export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
-  const [vaultText, setVaultText] = useState<string | undefined>(undefined);
+  const [vaultText, setVaultText] = useState<string | undefined>("");
   const [loadEditor, setLoadEditor] = useState<boolean>(false);
   const [currentTemplate, setCurrentTemplate] = useState<vaultTemplate>(
     vaultData?.vaultTemplate || "Default"

@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 
 import { SessionProvider, useSession } from "next-auth/react";
 import { auth } from "./utils/auth";
+import { ThemeToggle } from "@/components/themeToggle";
 
 export const metadata: Metadata = {
   title: "Viternity",
