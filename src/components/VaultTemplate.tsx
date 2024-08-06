@@ -87,6 +87,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
     }
   }, [vaultData]);
 
+  // used as callback to change the vault title both on db and client side
   const handleUpdateTitle = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!vaultData || vaultData.vaultTitle === vaultTitle) {
