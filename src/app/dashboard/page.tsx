@@ -10,7 +10,7 @@ export default async function page() {
   const userVaults = session ? await server_getUserVaults() : undefined;
 
   return (
-    <div className="min-h-screen bg-gradient-to-t from-secondary to-background flex justify-center items-center flex-col gap-5 text-foreground">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background flex justify-center items-center flex-col gap-5 text-foreground">
       {session && userVaults ? (
         <>
           <UserVaults vaults={userVaults} />

@@ -50,7 +50,7 @@ export default function vaultButton({
         <Dialog>
           <DialogTrigger>
             <div
-              className={`shadow-md shadow-shadow bg-background hover:bg-card text-foreground min-w-[100px] min-h-[50px] rounded-lg border text-center flex justify-center items-center transiton-colors duration-300 text-sm ${borderColor}`}
+              className={`px-4 shadow-md shadow-shadow bg-background hover:bg-card text-foreground min-w-[100px] min-h-[50px] rounded-lg border text-center flex justify-center items-center transiton-colors duration-300 text-sm ${borderColor}`}
             >
               {vaultName}
             </div>
