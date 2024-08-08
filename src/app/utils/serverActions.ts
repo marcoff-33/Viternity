@@ -69,11 +69,15 @@ export const server_createVault = async ({
   vaultName,
   isPrivate,
   vaultPassword,
+  allowCollab,
+  collabPassword,
 }: {
   vaultStyle: string;
   vaultName: string;
   isPrivate: boolean;
   vaultPassword: string;
+  allowCollab: boolean;
+  collabPassword: string;
 }) => {
   const session = await auth();
   const userId = session?.user.userId;
@@ -114,6 +118,8 @@ export const server_createVault = async ({
         vaultTitle: "",
         vaultTemplate: "Default",
         imageDescriptions: [],
+        allowCollab,
+        collabPassword,
       },
       { merge: true }
     );

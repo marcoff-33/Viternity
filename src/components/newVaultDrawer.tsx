@@ -223,6 +223,18 @@ function ProfileForm({
         message: "Editing password must be exactly 6 numbers",
         path: ["collabPassword"],
       }
+    )
+    .refine(
+      (data) => {
+        if (data.allowCollab && data.isPrivate) {
+          return data.collabPassword !== data.vaultPassword;
+        }
+        return true;
+      },
+      {
+        message: "Editing password must be different from Vault password",
+        path: ["collabPassword"],
+      }
     );
 
   const newVault = {
@@ -256,6 +268,7 @@ function ProfileForm({
         toast({
           title: "Success!",
           description: "A new vault has been created",
+          variant: "successful",
         });
         setOpen(false);
         router.refresh();
@@ -386,14 +399,14 @@ function ProfileForm({
           </div>
           <div className="grid gap-2">
             <Label htmlFor="vaultPrivacy" className="text-lg">
-              Editing Permissions
+              Editing Permissions {collabPassword}
             </Label>
 
             <div className="flex flex-row items-center gap-2">
               <Switch
                 checked={allowCollab}
                 onCheckedChange={(checked) => {
-                  setAllowCollab(checked), setVaultPassword("");
+                  setAllowCollab(checked), setCollabPassword("");
                 }}
               />
               <p className="text-muted-foreground">
