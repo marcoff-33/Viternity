@@ -31,40 +31,72 @@ import DefaultVault from "./DefaultVault";
 import TextOnlyVault from "./TextOnlyVault";
 import ImgOnlyVault from "./ImgOnlyVault";
 import TemplateSwitcher from "./TemplateSwitcher";
+import { useSession } from "next-auth/react";
 
 // TODO !!!! implement file deletion when deleting a vault
 
 export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
   const [vaultData, setVaultData] = useState<Vault | undefined>(undefined);
   const [vaultText, setVaultText] = useState<string | undefined>("");
+  const [isPrivate, setIsPrivate] = useState<boolean | undefined>(undefined);
+  const [vaultPassword, setVaultPassword] = useState<string | undefined>(
+    undefined
+  );
   const [loadEditor, setLoadEditor] = useState<boolean>(false);
   const [currentTemplate, setCurrentTemplate] = useState<vaultTemplate>(
     vaultData?.vaultTemplate || "Default"
   );
   const pathName = usePathname();
-  const [otpIsCorrect, setOtpIsCorrect] = useState<boolean>(
-    pathName.includes("edit") ? false : true
+  const [otpIsCorrect, setOtpIsCorrect] = useState<boolean | undefined>(
+    undefined
   );
   const [vaultTitle, setVaultTitle] = useState<string>(
     vaultData?.vaultTitle || ""
   );
   const [showTitleEditor, setShowTitleEditor] = useState<boolean>(false);
+  const [blockAccess, setBlockAccess] = useState<boolean | undefined>(
+    undefined
+  );
 
   // this is to keep track of text editor content after a user saves, in case of unmounting and remounting a template
-  // otherwise the content will be the outdated fetched HTML page text.
-  //
+  // otherwise the content will be the outdated fetched text.
   const [newContent, setNewContent] = useState<string | undefined>(undefined);
 
   const { toast } = useToast();
   const { setTheme } = useTheme();
-
+  const session = useSession();
+  const userId = session.data?.user.userId;
   const handleFirstLoad = async () => {
     const data = await server_getVaultData(vaultId);
+    // isEditable prop is either true or false depending on if we are in the /edit URL path or not(passed from parent page component)
+    // allowCollab and isPrivate are both privacy settings that, if true, will require a password to access the vault.
+    const isPasswordProtected = isEditable ? data.allowCollab : data.isPrivate;
+    const vaultPassword = isEditable ? data.collabPassword : data.vaultPassword;
+
+    // this function is responsible for blocking anyone but the original author from editing the page.
+    // if the page is not editable by other users(allowCollab is false),
+    // blockAcess will return true and be passed to the otp input as props, rendering a message instead of the password.
+    const blockAccess = () => {
+      if (isEditable && !isPasswordProtected && userId !== data.authorId) {
+        // !isPasswordProtected just means the vault has no password requirement to edit.
+        // it's only editable by the author if logged in. (only relevant to /edit URL)
+        return true;
+      }
+      return false;
+    };
     setVaultData(data);
     setVaultTitle(data.vaultTitle);
     setTheme(data.style);
     setCurrentTemplate(data.vaultTemplate);
+    // by setting the otp state to !isPasswordProtected, it will default to true if isPasswordProtected is false(public vault), avoiding the need to render it.
+    // blockAccess will check if we are on the edit URL(isEditable) and block anyone but the original author from editing the page unless allowCollab is true.
+    if (!blockAccess()) {
+      setOtpIsCorrect(!isPasswordProtected);
+    }
+    setVaultPassword(vaultPassword);
+    setBlockAccess(blockAccess());
   };
+
   const loadVaultText = async () => {
     if (vaultData && vaultData.vaultText) {
       console.log(vaultData.vaultText);
@@ -179,6 +211,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
       )}
       {currentTemplate === "Text only" ? (
         <TextOnlyVault
+          vaultPassword={vaultPassword!}
           otpIsCorrect={otpIsCorrect}
           isEditable={isEditable}
           vaultData={vaultData}
@@ -194,9 +227,11 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
           setVaultData={setVaultData}
           newContent={newContent}
           setNewContent={setNewContent}
+          blockAccess={blockAccess!}
         />
       ) : currentTemplate === "Images" ? (
         <ImgOnlyVault
+          vaultPassword={vaultPassword!}
           otpIsCorrect={otpIsCorrect}
           isEditable={isEditable}
           vaultData={vaultData}
@@ -210,9 +245,11 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
           vaultText={vaultText}
           setVaultTitle={setVaultTitle}
           setVaultData={setVaultData}
+          blockAccess={blockAccess!}
         />
       ) : (
         <DefaultVault
+          vaultPassword={vaultPassword!}
           otpIsCorrect={otpIsCorrect}
           isEditable={isEditable}
           vaultData={vaultData}
@@ -228,6 +265,7 @@ export default function VaultTemplate({ isEditable }: { isEditable: boolean }) {
           setVaultData={setVaultData}
           newContent={newContent}
           setNewContent={setNewContent}
+          blockAccess={blockAccess!}
         />
       )}
     </div>

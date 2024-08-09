@@ -35,8 +35,10 @@ export default function ImageOnlyVault({
   vaultText,
   setVaultTitle,
   setVaultData,
+  vaultPassword,
+  blockAccess,
 }: {
-  otpIsCorrect: boolean;
+  otpIsCorrect: boolean | undefined;
   isEditable: boolean;
   vaultData: Vault | undefined;
   vaultId: string;
@@ -52,10 +54,12 @@ export default function ImageOnlyVault({
   vaultText: string | undefined;
   setVaultTitle: (vaultTitle: string) => void;
   setVaultData: React.Dispatch<React.SetStateAction<Vault | undefined>>;
+  vaultPassword: string;
+  blockAccess: boolean | undefined;
 }) {
   return (
     <>
-      {otpIsCorrect ? (
+      {otpIsCorrect && otpIsCorrect !== undefined ? (
         <div className="flex justify-center flex-col w-full relative">
           {isEditable ? (
             <div className="container self-center flex justify-between pb-10">
@@ -128,10 +132,11 @@ export default function ImageOnlyVault({
         </div>
       ) : (
         <div className="flex justify-center items-center h-screen">
-          {vaultData && isEditable && (
+          {vaultData && (
             <OtpInput
-              vaultPassword={vaultData!.vaultPassword}
+              vaultPassword={vaultPassword}
               setOtpIsCorrect={setOtpIsCorrect}
+              blockAccess={blockAccess!}
             />
           )}
         </div>

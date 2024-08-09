@@ -26,8 +26,10 @@ export default function TextOnlyVault({
   setVaultData,
   newContent,
   setNewContent,
+  vaultPassword,
+  blockAccess,
 }: {
-  otpIsCorrect: boolean;
+  otpIsCorrect: boolean | undefined;
   isEditable: boolean;
   vaultData: Vault | undefined;
   vaultId: string;
@@ -45,10 +47,12 @@ export default function TextOnlyVault({
   setVaultData: React.Dispatch<React.SetStateAction<Vault | undefined>>;
   newContent: string | undefined;
   setNewContent: React.Dispatch<React.SetStateAction<string | undefined>>;
+  vaultPassword: string;
+  blockAccess: boolean | undefined;
 }) {
   return (
     <>
-      {otpIsCorrect ? (
+      {otpIsCorrect && otpIsCorrect !== undefined ? (
         <div className="flex justify-start flex-col w-full relative">
           {isEditable ? (
             <div className="container self-center flex justify-between pb-10">
@@ -123,10 +127,11 @@ export default function TextOnlyVault({
         </div>
       ) : (
         <div className="flex justify-center items-center">
-          {vaultData && isEditable && (
+          {vaultData && (
             <OtpInput
-              vaultPassword={vaultData!.vaultPassword}
+              vaultPassword={vaultPassword}
               setOtpIsCorrect={setOtpIsCorrect}
+              blockAccess={blockAccess!}
             />
           )}
         </div>

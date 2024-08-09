@@ -24,6 +24,9 @@ export type Vault = {
   vaultTitle: string;
   vaultTemplate: vaultTemplate;
   imageDescriptions: string[];
+  isPrivate: boolean;
+  collabPassword: string;
+  allowCollab: boolean;
 };
 
 export type dashboardInputMode = "Edit" | "Delete" | "Visit";

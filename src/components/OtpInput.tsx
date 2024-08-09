@@ -17,9 +17,11 @@ import { set } from "zod";
 export default function OtpInput({
   vaultPassword,
   setOtpIsCorrect,
+  blockAccess,
 }: {
   vaultPassword: string;
   setOtpIsCorrect: (value: boolean) => void;
+  blockAccess: boolean;
 }) {
   // attempts block to be implemented, for now used only for re-rendering otp
   const [wrongAttempts, setWrongAttemps] = useState("");
@@ -61,37 +63,45 @@ export default function OtpInput({
 
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
-      <div className="text-4xl text-foreground self-center py-5 font-bold">
-        Password Required to edit this Vault ...
-      </div>
-      <div className="transition-all duration-500">
-        <InputOTP
-          key={wrongAttempts}
-          value={currentOtpValue}
-          onChange={(value) => setCurrentOtpValue(value)}
-          maxLength={6}
-          className={`font-bold text-lg text-green-500`}
-          autoFocus
-          disabled={isDisabled}
-          onComplete={handleClick}
-          pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-        >
-          <InputOTPGroup autoFocus inputMode="text" className="">
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-          </InputOTPGroup>
-          <InputOTPSeparator />
-          <InputOTPGroup>
-            <InputOTPSlot index={3} />
-            <InputOTPSlot index={4} />
-            <InputOTPSlot index={5} />
-          </InputOTPGroup>
-        </InputOTP>
-      </div>
-      <div className="w-full items-center flex justify-center py-5 flex-col gap-2">
-        <Button className="z-[1000] self-center font-semibold">Submit</Button>
-      </div>
+      {!blockAccess ? (
+        <>
+          <div className="text-4xl text-foreground self-center py-5 font-bold">
+            Password Required to edit this Vault ...
+          </div>
+          <div className="transition-all duration-500">
+            <InputOTP
+              key={wrongAttempts}
+              value={currentOtpValue}
+              onChange={(value) => setCurrentOtpValue(value)}
+              maxLength={6}
+              className={`font-bold text-lg text-green-500`}
+              autoFocus
+              disabled={isDisabled}
+              onComplete={handleClick}
+              pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+            >
+              <InputOTPGroup autoFocus inputMode="text" className="">
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+          <div className="w-full items-center flex justify-center py-5 flex-col gap-2">
+            <Button className="z-[1000] self-center font-semibold">
+              Submit
+            </Button>
+          </div>{" "}
+        </>
+      ) : (
+        <div className="">xD</div>
+      )}
     </div>
   );
 }
