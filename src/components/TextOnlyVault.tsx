@@ -65,7 +65,7 @@ export default function TextOnlyVault({
           ) : (
             <Link
               href={`/edit/${vaultId}`}
-              className="self-end lg:pr-20 text-center items-center font-semibold sm:text-lg relative bg-transparent text-primary max-w-fit "
+              className="self-end lg:pr-20 text-center items-center font-semibold sm:text-lg relative bg-transparent text-accent max-w-fit "
             >
               Edit
             </Link>

@@ -4,6 +4,7 @@ import { server_handleNewUser } from "./serverActions";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google],
+  
   callbacks: {
     async jwt({ token, user, account, profile }) {
       if (account?.provider === "google" && profile) {
@@ -14,10 +15,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.googleId = userId;
         await server_handleNewUser(userId);
       }
+      
       return token;
     },
     async session({ session, token, user }) {
       session.user.userId = token.googleId;
+      
       return session;
     },
   },

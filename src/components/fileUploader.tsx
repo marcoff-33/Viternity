@@ -79,7 +79,7 @@ export default function FileUploader({
   };
 
   return (
-    <div className="self-center flex justify-center text-center items-center font-semibold sm:text-lg relative  text-primary">
+    <div className="self-center flex justify-center text-center items-center font-semibold sm:text-lg relative  text-accent">
       <Input
         type="file"
         id="file"

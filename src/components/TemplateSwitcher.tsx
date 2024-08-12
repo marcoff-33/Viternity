@@ -52,7 +52,7 @@ export default function TemplateSwitcher({
   };
   return (
     <Dialog>
-      <DialogTrigger className="text-primary text-xl">
+      <DialogTrigger className="text-accent text-xl">
         Advanced Options
       </DialogTrigger>
       <DialogContent closeButton={false} className="p-5 flex justify-center ">

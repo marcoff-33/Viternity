@@ -38,9 +38,9 @@ export default function UserVaults({ vaults }: { vaults: Vault[] }) {
   return (
     <div className="flex flex-col gap-5 justify-center items-center">
       <div
-        className={`min-w-full items-center flex justify-around bg-transparent border-b border-border pb-5 transition-colors duration-500 ${
+        className={`min-w-full items-center flex justify-around bg-transparent border-b pb-5 transition-colors duration-500 ${
           inputMode === "Delete" ? "border-destructive" : "border-border"
-        } ${inputMode === "Edit" ? "border-primary" : "border-border"}`}
+        } ${inputMode === "Edit" ? "border-b-accent" : "border-border"}`}
       >
         <InputButton
           buttonType={"Delete"}
@@ -142,7 +142,7 @@ export function InputButton({
       className={`${
         buttonType == currentInputMode && !isCurrentlyAnimating
           ? `${textColor} ${buttonBackgroundColor}`
-          : `bg-transparent text-primary `
+          : `bg-transparent text-foreground `
       } rounded-none first:rounded-l-md last:rounded-r-md border py-1 px-1 lg:font-semibold lg:text-xl font-semibold text-sm grow transition-all duration-300`}
     >
       {buttonType}

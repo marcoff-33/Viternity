@@ -12,7 +12,7 @@ export default function Example({
 }) {
   return (
     <div className="flex gap-2 flex-row border border-border bg-card rounded-md justify-aroun px-3 py-2 shadow-md shadow-shadow">
-      <div className="self-center">{icon}</div>
+      <div className="self-center text-accent">{icon}</div>
       <div className="grow">
         <div className="">{title}</div>
         <div className="text-sm text-muted-foreground">{description}</div>

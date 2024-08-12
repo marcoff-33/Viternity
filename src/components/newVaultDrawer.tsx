@@ -64,7 +64,7 @@ export default function NewVaultDrawer() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button
-            className="text-primary text-2xl text-center items-center self-center hover:text-primary"
+            className="text-accent text-2xl text-center items-center self-center hover:text-primary"
             variant={"outline"}
           >
             +
@@ -337,10 +337,8 @@ function ProfileForm({
             <SelectContent className="z-[5000]">
               <SelectGroup>
                 <SelectLabel>Themes</SelectLabel>
-                <SelectItem value="viternity">Default</SelectItem>
+                <SelectItem value="default">Default</SelectItem>
                 <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="violet">Violet</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -368,9 +366,7 @@ function ProfileForm({
               <p className="text-muted-foreground">Require Password to View</p>
             </div>
             <p
-              className={`text-sm  ${
-                isPrivate ? "text-primary" : "text-muted"
-              }`}
+              className={`text-sm  ${isPrivate ? "text-accent" : "text-muted"}`}
             >
               Anyone trying to view this page will be required to enter this
               password before viewing any of the contents.
@@ -415,7 +411,7 @@ function ProfileForm({
             </div>
             <p
               className={`text-sm  ${
-                allowCollab ? "text-primary" : "text-muted"
+                allowCollab ? "text-accent" : "text-muted"
               }`}
             >
               This will allow anyone with the given password to add, edit, or

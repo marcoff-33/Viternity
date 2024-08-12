@@ -44,22 +44,22 @@ export default async function Home() {
         </div>
         <div className="flex gap-5 flex-col md:flex-row justify-around items-center">
           <Example
-            icon={<MdRestaurantMenu size={25} className="text-primary" />}
+            icon={<MdRestaurantMenu size={25} className="text-accent" />}
             title="Menù"
             description="Per il tuo ristorante"
           />
           <Example
-            icon={<GrMap size={25} className="text-primary" />}
+            icon={<GrMap size={25} className="text-accent" />}
             title="Annunci"
             description="Per la tua attività o evento"
           />
           <Example
-            icon={<TbBuildingWarehouse size={25} className="text-primary" />}
+            icon={<TbBuildingWarehouse size={25} className="text-accent" />}
             title="Invetario"
             description="Per il tuo magazzino"
           />
           <Example
-            icon={<LuPalmtree size={25} className="text-primary" />}
+            icon={<LuPalmtree size={25} className="text-accent" />}
             title="Diario"
             description="Per i tuoi ricordi"
           />

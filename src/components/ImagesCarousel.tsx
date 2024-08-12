@@ -94,11 +94,11 @@ export function ImagesCarousel({
                 <img
                   src={vaultImages![0]}
                   alt=""
-                  className="rounded-3xl object-cover object-center absolute h-full w-full bg-gradient-to-b from-zinc-800 to-zinc-900" //
+                  className="rounded-3xl object-cover object-center absolute h-full w-full bg-gradient-to-b from-background to-primary" //
                 />
               </>
             ) : (
-              <div className="w-full h-full flex justify-center items-center rounded-3xl bg-gradient-to-b from-background to-border border border-border"></div>
+              <div className="w-full h-full flex justify-center items-center rounded-3xl bg-gradient-to-b from-background to-primary/50 border border-border"></div>
             )}
           </AspectRatio>
           <div className="flex flex-row justify-center py-2">
@@ -108,7 +108,7 @@ export function ImagesCarousel({
                   <RxDotFilled
                     className={`${
                       index == 0 ? "text-xl" : "text-sm"
-                    } items-center self-center text-primary`}
+                    } items-center self-center text-accent`}
                     key={index}
                   />
                 ))}
